@@ -43,14 +43,6 @@ const DEFAULT_CAROUSEL_IMAGES: CarouselImage[] = [
     tag: 'FOTO DO CT'
   },
   {
-    id: 'slide-2',
-    image: IMAGES.profOrelhaGi,
-    title: 'Liderança Técnica de Ponta',
-    description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
-    tag: 'TÉCNICA',
-    objectPosition: 'center 20%'
-  },
-  {
     id: 'slide-3',
     image: IMAGES.profChampion,
     title: 'Mentalidade de Campeão',
@@ -82,41 +74,39 @@ const DEFAULT_CAROUSEL_IMAGES: CarouselImage[] = [
 
 // Resolves and maps raw relative path strings (from database/storage) to Vite's production bundled and hashed asset URLs
 const mapImagePaths = (items: CarouselImage[]): CarouselImage[] => {
-  return items.map(item => {
-    const imgStr = typeof item.image === 'string' ? item.image : '';
-    
-    if (imgStr.includes('ct_gym_interior')) {
-      return { ...item, image: IMAGES.ctGymInterior };
-    }
-    if (imgStr.includes('prof_orelha_gi') || imgStr.includes('prof_orelha_diploma') || item.id === 'slide-2' || item.title === 'Liderança Técnica de Ponta') {
-      return { 
-        ...item, 
-        id: 'slide-2',
-        image: IMAGES.profOrelhaGi,
-        title: 'Liderança Técnica de Ponta',
-        description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
-        tag: 'TÉCNICA',
-        objectPosition: 'center 20%'
-      };
-    }
-    if (imgStr.includes('prof_champion')) {
-      return { ...item, image: IMAGES.profChampion };
-    }
-    if (imgStr.includes('kids_jiu_jitsu_class') || imgStr.includes('kids_class')) {
-      return { ...item, image: IMAGES.kidsJiuJitsuClass };
-    }
-    if (imgStr.includes('foto_amizade_equipe') || imgStr.includes('jiu_jitsu_team_unity')) {
-      return { ...item, image: IMAGES.jiuJitsuTeamUnity };
-    }
-    if (imgStr.includes('treino_feminino')) {
-      return { ...item, image: IMAGES.treinoFeminino };
-    }
-    if (imgStr.includes('ct_orelha_fight_logo_real') || imgStr.includes('logo_real')) {
-      return { ...item, image: IMAGES.ctOrelhaFightLogo };
-    }
-    
-    return item;
-  });
+  return items
+    .filter(item => {
+      const imgStr = typeof item.image === 'string' ? item.image : '';
+      const isLideranca = item.id === 'slide-2' || 
+                          item.title === 'Liderança Técnica de Ponta' || 
+                          imgStr.includes('prof_orelha_gi') ||
+                          imgStr.includes('prof_orelha_diploma');
+      return !isLideranca;
+    })
+    .map(item => {
+      const imgStr = typeof item.image === 'string' ? item.image : '';
+      
+      if (imgStr.includes('ct_gym_interior')) {
+        return { ...item, image: IMAGES.ctGymInterior };
+      }
+      if (imgStr.includes('prof_champion')) {
+        return { ...item, image: IMAGES.profChampion };
+      }
+      if (imgStr.includes('kids_jiu_jitsu_class') || imgStr.includes('kids_class')) {
+        return { ...item, image: IMAGES.kidsJiuJitsuClass };
+      }
+      if (imgStr.includes('foto_amizade_equipe') || imgStr.includes('jiu_jitsu_team_unity')) {
+        return { ...item, image: IMAGES.jiuJitsuTeamUnity };
+      }
+      if (imgStr.includes('treino_feminino')) {
+        return { ...item, image: IMAGES.treinoFeminino };
+      }
+      if (imgStr.includes('ct_orelha_fight_logo_real') || imgStr.includes('logo_real')) {
+        return { ...item, image: IMAGES.ctOrelhaFightLogo };
+      }
+      
+      return item;
+    });
 };
 
 export default function AdminCarousel() {
@@ -246,12 +236,6 @@ export default function AdminCarousel() {
               const parsed = JSON.parse(oldSaved);
               if (Array.isArray(parsed)) {
                 const migrated = mapImagePaths(parsed.filter((item): item is CarouselImage => !!item && typeof item === 'object'));
-                
-                // Guarantee slide-2 exists in migrated array
-                const hasSlide2 = migrated.some(item => item && item.id === 'slide-2');
-                if (!hasSlide2) {
-                  migrated.splice(1, 0, DEFAULT_CAROUSEL_IMAGES[1]);
-                }
                 
                 localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(migrated));
                 saved = JSON.stringify(migrated);

@@ -60,14 +60,10 @@ export default function TransparentLogo({ src, alt, className }: TransparentLogo
 
         // Compute Euclidean distance in RGB space to the sampled background color
         const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
-        if (dist < 85) return true; // Generous tolerance for JPEG/PNG compression shadows
-
-        // If background is bright white/off-white, also consider any very bright pixels as background
-        if (bgR > 200 && bgG > 200 && bgB > 200) {
-          if (r > 195 && g > 195 && b > 195) return true;
-        }
-
-        return false;
+        
+        // Highly precise threshold: only remove pixels extremely close to the sampled off-white background
+        // to prevent any leaking into the green shield or black elements or white text.
+        return dist < 35;
       };
 
       // Active matrix for BFS tracking

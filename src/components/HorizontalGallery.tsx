@@ -17,13 +17,6 @@ const initialSlides = [
     description: 'Amplo espaço de tatame de alta densidade em Nova Iguaçu, a 10 minutos da Av. Brasil, higienizado diariamente para sua máxima segurança e conforto operacional.',
   },
   {
-    id: 'atleta-competicao',
-    image: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=1000&auto=format&fit=crop',
-    tag: 'LINHAGEM',
-    title: 'Espírito Orelha Fight Team',
-    description: 'Trabalho focado, posições eficientes de passagem e pressão constante. Mantemos viva a centenária linhagem técnica do Jiu-Jitsu.',
-  },
-  {
     id: 'infantil-aula',
     image: IMAGES.kidsJiuJitsuClass,
     tag: 'FUTURO',
@@ -36,6 +29,13 @@ const initialSlides = [
     tag: 'INTEGRAÇÃO',
     title: 'Amizade e Respeito',
     description: 'Celebrações de graduações, treinos de fim de ano e união familiar. Mais do que treinar Jiu-Jitsu, nós cuidamos uns dos outros.',
+  },
+  {
+    id: 'atleta-competicao',
+    image: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=1000&auto=format&fit=crop',
+    tag: 'LINHAGEM',
+    title: 'Espírito Orelha Fight Team',
+    description: 'Trabalho focado, posições eficientes de passagem e pressão constante. Mantemos viva a centenária linhagem técnica do Jiu-Jitsu.',
   },
 ];
 

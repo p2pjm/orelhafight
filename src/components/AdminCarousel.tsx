@@ -63,8 +63,61 @@ const DEFAULT_CAROUSEL_IMAGES: CarouselImage[] = [
     title: 'Futuras Gerações no Tatame',
     description: 'Desenvolvimento infantil completo com educação anti-bullying, autoconfiança e disciplina.',
     tag: 'INFANTIL'
+  },
+  {
+    id: 'slide-5',
+    image: IMAGES.jiuJitsuTeamUnity,
+    title: 'Integração e Amizade',
+    description: 'Celebrações, treinos especiais e graduações que marcam nossa união fora e dentro do tatame.',
+    tag: 'EQUIPE'
+  },
+  {
+    id: 'slide-6',
+    image: IMAGES.treinoFeminino,
+    title: 'Turma de Treino Feminino',
+    description: 'Espaço seguro e focado para o desenvolvimento de técnicas de defesa pessoal e alta evolução física.',
+    tag: 'FEMININO'
   }
 ];
+
+// Resolves and maps raw relative path strings (from database/storage) to Vite's production bundled and hashed asset URLs
+const mapImagePaths = (items: CarouselImage[]): CarouselImage[] => {
+  return items.map(item => {
+    const imgStr = typeof item.image === 'string' ? item.image : '';
+    
+    if (imgStr.includes('ct_gym_interior')) {
+      return { ...item, image: IMAGES.ctGymInterior };
+    }
+    if (imgStr.includes('prof_orelha_gi') || imgStr.includes('prof_orelha_diploma') || item.id === 'slide-2' || item.title === 'Liderança Técnica de Ponta') {
+      return { 
+        ...item, 
+        id: 'slide-2',
+        image: IMAGES.profOrelhaGi,
+        title: 'Liderança Técnica de Ponta',
+        description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
+        tag: 'TÉCNICA',
+        objectPosition: 'center 20%'
+      };
+    }
+    if (imgStr.includes('prof_champion')) {
+      return { ...item, image: IMAGES.profChampion };
+    }
+    if (imgStr.includes('kids_jiu_jitsu_class') || imgStr.includes('kids_class')) {
+      return { ...item, image: IMAGES.kidsJiuJitsuClass };
+    }
+    if (imgStr.includes('foto_amizade_equipe') || imgStr.includes('jiu_jitsu_team_unity')) {
+      return { ...item, image: IMAGES.jiuJitsuTeamUnity };
+    }
+    if (imgStr.includes('treino_feminino')) {
+      return { ...item, image: IMAGES.treinoFeminino };
+    }
+    if (imgStr.includes('ct_orelha_fight_logo_real') || imgStr.includes('logo_real')) {
+      return { ...item, image: IMAGES.ctOrelhaFightLogo };
+    }
+    
+    return item;
+  });
+};
 
 export default function AdminCarousel() {
   const [images, setImages] = useState<CarouselImage[]>([]);
@@ -106,9 +159,10 @@ export default function AdminCarousel() {
           const data = docSnap.data();
           if (data && Array.isArray(data.images)) {
             const cloudImages = data.images as CarouselImage[];
-            setImages(cloudImages);
+            const mappedCloud = mapImagePaths(cloudImages);
+            setImages(mappedCloud);
             // Sync with localStorage
-            localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(cloudImages));
+            localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(mappedCloud));
             cloudLoaded = true;
           }
         }
@@ -130,36 +184,7 @@ export default function AdminCarousel() {
             try {
               const parsed = JSON.parse(oldSaved);
               if (Array.isArray(parsed)) {
-                const migrated = parsed
-                  .filter((item): item is CarouselImage => !!item && typeof item === 'object')
-                  .map(item => {
-                    const imgStr = typeof item.image === 'string' ? item.image : '';
-                    if (
-                      item.id === 'slide-2' || 
-                      item.title === 'Liderança Técnica de Ponta' || 
-                      (!imgStr || imgStr.includes('prof_orelha_gi_') || imgStr.includes('prof_orelha_diploma_'))
-                    ) {
-                      return { 
-                        ...item, 
-                        id: 'slide-2',
-                        image: IMAGES.profOrelhaGi,
-                        title: 'Liderança Técnica de Ponta',
-                        description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
-                        tag: 'TÉCNICA',
-                        objectPosition: 'center 20%'
-                      };
-                    }
-                    if (imgStr && imgStr.includes('jiu_jitsu_team_unity')) {
-                      return {
-                        ...item,
-                        image: IMAGES.jiuJitsuTeamUnity
-                      };
-                    }
-                    return {
-                      ...item,
-                      image: imgStr
-                    };
-                  });
+                const migrated = mapImagePaths(parsed.filter((item): item is CarouselImage => !!item && typeof item === 'object'));
                 
                 // Guarantee slide-2 exists in migrated array
                 const hasSlide2 = migrated.some(item => item && item.id === 'slide-2');
@@ -180,36 +205,7 @@ export default function AdminCarousel() {
           try {
             const parsed = JSON.parse(saved);
             if (Array.isArray(parsed)) {
-              const migrated = parsed
-                .filter((item): item is CarouselImage => !!item && typeof item === 'object')
-                .map(item => {
-                  const imgStr = typeof item.image === 'string' ? item.image : '';
-                  if (
-                    item.id === 'slide-2' || 
-                    item.title === 'Liderança Técnica de Ponta' || 
-                    (imgStr && (imgStr.includes('prof_orelha_gi_') || imgStr.includes('prof_orelha_diploma_')))
-                  ) {
-                    return { 
-                      ...item, 
-                      id: 'slide-2',
-                      image: IMAGES.profOrelhaGi,
-                      title: 'Liderança Técnica de Ponta',
-                      description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
-                      tag: 'TÉCNICA',
-                      objectPosition: 'center 20%'
-                    };
-                  }
-                  if (imgStr && imgStr.includes('jiu_jitsu_team_unity')) {
-                    return {
-                      ...item,
-                      image: IMAGES.jiuJitsuTeamUnity
-                    };
-                  }
-                  return {
-                    ...item,
-                    image: imgStr
-                  };
-                });
+              const migrated = mapImagePaths(parsed.filter((item): item is CarouselImage => !!item && typeof item === 'object'));
               setImages(migrated);
               localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(migrated));
             } else {

@@ -1,0 +1,6 @@
+{
+  "name": "CT Orelha Fight",
+  "description": "Landing Page para a Escola de Luta Orelha Fight - Jiu-Jitsu em Nova Iguaçu - RJ",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

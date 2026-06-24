@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-primary: #73E34D;
+  --color-brand-highlight: #8EFF5C;
+  --color-brand-dark: #0E3B2F;
+  --color-bg-black: #000000;
+  --color-bg-card: #0A0A0A;
+  --color-text-offwhite: #F4F1E8;
+  --color-text-gray: #A5A5A5;
+  --color-border-subtle: rgba(115, 227, 77, 0.18);
+}
+
+/* Base resets & scroll smooth behavior */
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-black);
+  color: var(--color-text-offwhite);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-dark);
+}
+
+/* Custom glowing effects */
+.glow-green {
+  box-shadow: 0 0 40px -5px rgba(115, 227, 77, 0.15);
+}
+
+.glow-text {
+  text-shadow: 0 0 15px rgba(142, 255, 92, 0.3);
+}
+
+/* Smooth Drag & Swiper utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

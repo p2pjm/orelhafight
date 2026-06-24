@@ -212,6 +212,23 @@ export default function AdminCarousel() {
         }
       } catch (error) {
         console.error('Error loading images from Firestore Cloud:', error);
+        
+        // Load fallback FIRST so the user doesn't get a broken blank screen or lost data
+        let saved = localStorage.getItem('ct_orelha_dynamic_carousel_v3');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) {
+              const migrated = mapImagePaths(parsed.filter((item): item is CarouselImage => !!item && typeof item === 'object'));
+              setImages(migrated);
+            }
+          } catch (e) {
+            console.error('Parsing fallback error:', e);
+          }
+        } else {
+          setImages(DEFAULT_CAROUSEL_IMAGES);
+        }
+
         if (error instanceof Error && (error.message.includes('permission') || error.message.includes('Permission') || error.message.includes('insufficient'))) {
           handleFirestoreError(error, OperationType.GET, 'settings/carousel_config');
         }

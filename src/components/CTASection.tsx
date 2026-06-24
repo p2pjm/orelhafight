@@ -36,7 +36,7 @@ export default function CTASection() {
           A Hora É Agora • Nova Iguaçu RJ
         </motion.div>
 
-        {/* Strong emotional display heading */}
+        {/* Strong emotional display heading - Atualizado para acionar controle de versão */}
         <motion.h2
           initial={{ opacity: 0, scale: 0.98 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -45,9 +45,9 @@ export default function CTASection() {
           className="text-3xl sm:text-6xl font-extrabold text-white tracking-tight leading-none mb-6 uppercase"
           id="cta-final-heading"
         >
-          Mude Sua História.<br />
+          Mude Sua História<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-highlight glow-text">
-            Dê O Primeiro Passo.
+            Dê O Primeiro Passo
           </span>
         </motion.h2>
 

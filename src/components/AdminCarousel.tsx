@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { IMAGES } from '../constants/images';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 
 interface CarouselImage {
   id: string;
@@ -93,123 +95,159 @@ export default function AdminCarousel() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize images from localStorage or fallback to defaults
+  // Initialize images from Firebase Firestore, falling back to localStorage or defaults
   useEffect(() => {
-    let saved = localStorage.getItem('ct_orelha_dynamic_carousel_v3');
-    
-    // If we only have the old v2 database, let's migrate it once to v3
-    if (!saved) {
-      const oldSaved = localStorage.getItem('ct_orelha_dynamic_carousel_v2') || localStorage.getItem('ct_orelha_dynamic_carousel');
-      if (oldSaved) {
-        try {
-          const parsed = JSON.parse(oldSaved);
-          if (Array.isArray(parsed)) {
-            const migrated = parsed
-              .filter((item): item is CarouselImage => !!item && typeof item === 'object')
-              .map(item => {
-                const imgStr = typeof item.image === 'string' ? item.image : '';
-                // Check if it's the old slide-2 or has references to the old image asset
-                if (
-                  item.id === 'slide-2' || 
-                  item.title === 'Liderança Técnica de Ponta' || 
-                  (!imgStr || imgStr.includes('prof_orelha_gi_') || imgStr.includes('prof_orelha_diploma_'))
-                ) {
-                  return { 
-                    ...item, 
-                    id: 'slide-2',
-                    image: IMAGES.profOrelhaGi,
-                    title: 'Liderança Técnica de Ponta',
-                    description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
-                    tag: 'TÉCNICA',
-                    objectPosition: 'center 20%'
-                  };
-                }
-                if (imgStr && imgStr.includes('jiu_jitsu_team_unity')) {
-                  return {
-                    ...item,
-                    image: IMAGES.jiuJitsuTeamUnity
-                  };
-                }
-                return {
-                  ...item,
-                  image: imgStr
-                };
-              });
-            
-            // Guarantee slide-2 exists in migrated array
-            const hasSlide2 = migrated.some(item => item && item.id === 'slide-2');
-            if (!hasSlide2) {
-              migrated.splice(1, 0, DEFAULT_CAROUSEL_IMAGES[1]);
-            }
-            
-            localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(migrated));
-            saved = JSON.stringify(migrated);
+    async function loadImages() {
+      let cloudLoaded = false;
+      try {
+        const docRef = doc(db, 'settings', 'carousel_config');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data && Array.isArray(data.images)) {
+            const cloudImages = data.images as CarouselImage[];
+            setImages(cloudImages);
+            // Sync with localStorage
+            localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(cloudImages));
+            cloudLoaded = true;
           }
-        } catch (e) {
-          console.error('Migration error:', e);
+        }
+      } catch (error) {
+        console.error('Error loading images from Firestore Cloud:', error);
+        if (error instanceof Error && (error.message.includes('permission') || error.message.includes('Permission') || error.message.includes('insufficient'))) {
+          handleFirestoreError(error, OperationType.GET, 'settings/carousel_config');
         }
       }
-    }
 
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          const migrated = parsed
-            .filter((item): item is CarouselImage => !!item && typeof item === 'object')
-            .map(item => {
-              const imgStr = typeof item.image === 'string' ? item.image : '';
-              if (
-                item.id === 'slide-2' || 
-                item.title === 'Liderança Técnica de Ponta' || 
-                (imgStr && (imgStr.includes('prof_orelha_gi_') || imgStr.includes('prof_orelha_diploma_')))
-              ) {
-                return { 
-                  ...item, 
-                  id: 'slide-2',
-                  image: IMAGES.profOrelhaGi,
-                  title: 'Liderança Técnica de Ponta',
-                  description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
-                  tag: 'TÉCNICA',
-                  objectPosition: 'center 20%'
-                };
+      // If we couldn't load from cloud, fallback to localStorage migration/loads
+      if (!cloudLoaded) {
+        let saved = localStorage.getItem('ct_orelha_dynamic_carousel_v3');
+        
+        // If we only have the old v2 database, let's migrate it once to v3
+        if (!saved) {
+          const oldSaved = localStorage.getItem('ct_orelha_dynamic_carousel_v2') || localStorage.getItem('ct_orelha_dynamic_carousel');
+          if (oldSaved) {
+            try {
+              const parsed = JSON.parse(oldSaved);
+              if (Array.isArray(parsed)) {
+                const migrated = parsed
+                  .filter((item): item is CarouselImage => !!item && typeof item === 'object')
+                  .map(item => {
+                    const imgStr = typeof item.image === 'string' ? item.image : '';
+                    if (
+                      item.id === 'slide-2' || 
+                      item.title === 'Liderança Técnica de Ponta' || 
+                      (!imgStr || imgStr.includes('prof_orelha_gi_') || imgStr.includes('prof_orelha_diploma_'))
+                    ) {
+                      return { 
+                        ...item, 
+                        id: 'slide-2',
+                        image: IMAGES.profOrelhaGi,
+                        title: 'Liderança Técnica de Ponta',
+                        description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
+                        tag: 'TÉCNICA',
+                        objectPosition: 'center 20%'
+                      };
+                    }
+                    if (imgStr && imgStr.includes('jiu_jitsu_team_unity')) {
+                      return {
+                        ...item,
+                        image: IMAGES.jiuJitsuTeamUnity
+                      };
+                    }
+                    return {
+                      ...item,
+                      image: imgStr
+                    };
+                  });
+                
+                // Guarantee slide-2 exists in migrated array
+                const hasSlide2 = migrated.some(item => item && item.id === 'slide-2');
+                if (!hasSlide2) {
+                  migrated.splice(1, 0, DEFAULT_CAROUSEL_IMAGES[1]);
+                }
+                
+                localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(migrated));
+                saved = JSON.stringify(migrated);
               }
-              if (imgStr && imgStr.includes('jiu_jitsu_team_unity')) {
-                return {
-                  ...item,
-                  image: IMAGES.jiuJitsuTeamUnity
-                };
-              }
-              return {
-                ...item,
-                image: imgStr
-              };
-            });
-          setImages(migrated);
-          localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(migrated));
+            } catch (e) {
+              console.error('Migration error:', e);
+            }
+          }
+        }
+
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) {
+              const migrated = parsed
+                .filter((item): item is CarouselImage => !!item && typeof item === 'object')
+                .map(item => {
+                  const imgStr = typeof item.image === 'string' ? item.image : '';
+                  if (
+                    item.id === 'slide-2' || 
+                    item.title === 'Liderança Técnica de Ponta' || 
+                    (imgStr && (imgStr.includes('prof_orelha_gi_') || imgStr.includes('prof_orelha_diploma_')))
+                  ) {
+                    return { 
+                      ...item, 
+                      id: 'slide-2',
+                      image: IMAGES.profOrelhaGi,
+                      title: 'Liderança Técnica de Ponta',
+                      description: 'Ajustes finos que aceleram sua evolução, sob o comando do Prof. Leonardo Orelha.',
+                      tag: 'TÉCNICA',
+                      objectPosition: 'center 20%'
+                    };
+                  }
+                  if (imgStr && imgStr.includes('jiu_jitsu_team_unity')) {
+                    return {
+                      ...item,
+                      image: IMAGES.jiuJitsuTeamUnity
+                    };
+                  }
+                  return {
+                    ...item,
+                    image: imgStr
+                  };
+                });
+              setImages(migrated);
+              localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(migrated));
+            } else {
+              setImages(DEFAULT_CAROUSEL_IMAGES);
+            }
+          } catch (e) {
+            console.error('Parsing/migration error in active load:', e);
+            setImages(DEFAULT_CAROUSEL_IMAGES);
+          }
         } else {
           setImages(DEFAULT_CAROUSEL_IMAGES);
         }
-      } catch (e) {
-        console.error('Parsing/migration error in active load:', e);
-        setImages(DEFAULT_CAROUSEL_IMAGES);
       }
-    } else {
-      setImages(DEFAULT_CAROUSEL_IMAGES);
     }
+    loadImages();
   }, []);
 
-  // Save changes to localStorage helper
-  const saveImages = (updatedImages: CarouselImage[]) => {
+  // Save changes to localStorage and Firebase Firestore
+  const saveImages = async (updatedImages: CarouselImage[]) => {
     setImages(updatedImages);
     try {
       localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(updatedImages));
     } catch (e) {
       console.error('Failed to save to localStorage:', e);
+    }
+
+    try {
+      const docRef = doc(db, 'settings', 'carousel_config');
+      await setDoc(docRef, { images: updatedImages });
+    } catch (e) {
+      console.error('Failed to save to Firestore Cloud:', e);
       setAdminFeedback({ 
         type: 'error', 
-        message: 'Aviso: Não foi possível persistir as alterações no navegador. Limite de armazenamento local (localStorage) excedido ou bloqueado. Tente remover fotos antigas antes de adicionar novas ou use URLs de imagem na internet.' 
+        message: 'Aviso: Não foi possível salvar na nuvem (Firestore). As alterações estão temporárias e salvas apenas no seu navegador.' 
       });
+      if (e instanceof Error && (e.message.includes('permission') || e.message.includes('Permission') || e.message.includes('insufficient'))) {
+        handleFirestoreError(e, OperationType.WRITE, 'settings/carousel_config');
+      }
     }
   };
 

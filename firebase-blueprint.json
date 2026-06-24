@@ -1,0 +1,13 @@
+{
+  "collections": {
+    "settings": {
+      "schema": {
+        "images": "array"
+      },
+      "rules": {
+        "read": "true",
+        "write": "true"
+      }
+    }
+  }
+}

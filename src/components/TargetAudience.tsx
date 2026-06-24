@@ -54,21 +54,6 @@ const segments = [
     description: 'Sabemos que começar uma nova arte marcial pode assustar. Por isso, oferecemos uma recepção calorosa e metodologia adaptada. Você aprenderá cada detalhe de pegadas e posturas de maneira leve e supervisionada.',
   },
   {
-    id: 'advanced',
-    label: 'Praticantes Avançados / Atletas',
-    title: 'Treinamento Avançado e Competição',
-    subtitle: 'Refine seu jogo técnico, treine forte e faça parte de uma linhagem consagrada de luta.',
-    icon: Trophy,
-    ageRange: 'Todas as idades',
-    focus: [
-      'Refinamento técnico de guarda e passagens',
-      'Treino regular de alta intensidade (sparring)',
-      'Estratégias de competição e regras',
-      'Intercâmbio técnico diferenciado (Carlson Gracie)',
-    ],
-    description: 'Se você já treina, procura treinos fortes e quer polir sua técnica, o CT Orelha Fight oferece o tatame ideal. Sob a liderança do Prof. Leonardo Orelha, você alcançará o próximo nível na sua jornada técnica.',
-  },
-  {
     id: 'womens',
     label: 'Mulheres',
     title: 'Jiu-Jitsu Feminino',
@@ -82,6 +67,21 @@ const segments = [
       'Comunidade unida de apoio e empoderamento',
     ],
     description: 'Nossa turma de Jiu-Jitsu Feminino oferece um espaço exclusivo e amigável para mulheres de todas as idades aprenderem a arte suave, desenvolverem segurança pessoal e aumentarem o condicionamento sem receios. Fortaleça seu corpo e sua mente em um ambiente inspirador.',
+  },
+  {
+    id: 'advanced',
+    label: 'Praticantes Avançados / Atletas',
+    title: 'Treinamento Avançado e Competição',
+    subtitle: 'Refine seu jogo técnico, treine forte e faça parte de uma linhagem consagrada de luta.',
+    icon: Trophy,
+    ageRange: 'Todas as idades',
+    focus: [
+      'Refinamento técnico de guarda e passagens',
+      'Treino regular de alta intensidade (sparring)',
+      'Estratégias de competição e regras',
+      'Intercâmbio técnico diferenciado (Carlson Gracie)',
+    ],
+    description: 'Se você já treina, procura treinos fortes e quer polir sua técnica, o CT Orelha Fight oferece o tatame ideal. Sob a liderança do Prof. Leonardo Orelha, você alcançará o próximo nível na sua jornada técnica.',
   },
   {
     id: 'families',
@@ -205,14 +205,26 @@ export default function TargetAudience() {
                 </p>
 
                 {/* Main CTA */}
-                <button
-                  onClick={handleWhatsApp}
-                  className="px-6 py-3.5 bg-brand-primary text-black font-semibold rounded-xl hover:bg-brand-highlight hover:scale-[1.02] transition-all flex items-center justify-center gap-2 self-start cursor-pointer text-sm"
-                  id={`audience-cta-btn-${activeTab}`}
-                >
-                  <Users className="h-4.5 w-4.5 fill-black text-black" />
-                  Quero Conhecer Essa Turma
-                </button>
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={handleWhatsApp}
+                    className="px-6 py-3.5 bg-brand-primary text-black font-semibold rounded-xl hover:bg-brand-highlight hover:scale-[1.02] transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+                    id={`audience-cta-btn-${activeTab}`}
+                  >
+                    <Users className="h-4.5 w-4.5 fill-black text-black" />
+                    Quero Conhecer Essa Turma
+                  </button>
+
+                  {activeTab === 'womens' && (
+                    <a
+                      href="#treino-feminino"
+                      className="px-6 py-3.5 bg-transparent border border-brand-primary/40 hover:border-brand-primary text-brand-primary font-semibold rounded-xl hover:bg-brand-primary/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+                      id="audience-learn-more-womens-btn"
+                    >
+                      Saiba mais
+                    </a>
+                  )}
+                </div>
               </div>
 
               {/* Focus List Checklist Side (Right) */}

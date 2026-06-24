@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { IMAGES } from '../constants/images';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs, writeBatch } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 
 interface CarouselImage {
@@ -153,17 +153,61 @@ export default function AdminCarousel() {
     async function loadImages() {
       let cloudLoaded = false;
       try {
-        const docRef = doc(db, 'settings', 'carousel_config');
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data && Array.isArray(data.images)) {
-            const cloudImages = data.images as CarouselImage[];
-            const mappedCloud = mapImagePaths(cloudImages);
-            setImages(mappedCloud);
-            // Sync with localStorage
-            localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(mappedCloud));
-            cloudLoaded = true;
+        // Try to load from the modern subcollection first
+        const slidesColRef = collection(db, 'settings', 'carousel_config', 'slides');
+        const slidesSnap = await getDocs(slidesColRef);
+        
+        if (!slidesSnap.empty) {
+          const slidesData: (CarouselImage & { order?: number })[] = [];
+          slidesSnap.forEach(docSnap => {
+            slidesData.push({ id: docSnap.id, ...docSnap.data() } as any);
+          });
+          
+          // Sort slides by the 'order' field (or custom sorting if order is missing)
+          slidesData.sort((a, b) => {
+            const orderA = typeof a.order === 'number' ? a.order : 0;
+            const orderB = typeof b.order === 'number' ? b.order : 0;
+            return orderA - orderB;
+          });
+          
+          const mappedCloud = mapImagePaths(slidesData.map(({ order, ...slide }) => slide));
+          setImages(mappedCloud);
+          localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(mappedCloud));
+          cloudLoaded = true;
+        } else {
+          // Fallback to the legacy single document field
+          const docRef = doc(db, 'settings', 'carousel_config');
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data && Array.isArray(data.images)) {
+              const cloudImages = data.images as CarouselImage[];
+              const mappedCloud = mapImagePaths(cloudImages);
+              setImages(mappedCloud);
+              
+              // Migrate these legacy images to the subcollection automatically so they are stored safely!
+              try {
+                const batch = writeBatch(db);
+                mappedCloud.forEach((slide, idx) => {
+                  const slideDocRef = doc(db, 'settings', 'carousel_config', 'slides', slide.id);
+                  batch.set(slideDocRef, {
+                    image: slide.image,
+                    title: slide.title,
+                    description: slide.description,
+                    tag: slide.tag,
+                    order: idx,
+                    objectPosition: slide.objectPosition || ''
+                  });
+                });
+                await batch.commit();
+                console.log('Successfully migrated legacy carousel document to subcollection!');
+              } catch (migrationError) {
+                console.error('Failed to run auto-migration to subcollection:', migrationError);
+              }
+
+              localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(mappedCloud));
+              cloudLoaded = true;
+            }
           }
         }
       } catch (error) {
@@ -233,8 +277,63 @@ export default function AdminCarousel() {
     }
 
     try {
-      const docRef = doc(db, 'settings', 'carousel_config');
-      await setDoc(docRef, { images: updatedImages });
+      // 1. Get all existing slide document IDs in the subcollection to identify deletions
+      const slidesColRef = collection(db, 'settings', 'carousel_config', 'slides');
+      const slidesSnap = await getDocs(slidesColRef);
+      const existingSlideIds = new Set<string>();
+      slidesSnap.forEach(docSnap => {
+        existingSlideIds.add(docSnap.id);
+      });
+
+      // 2. Prepare a Firestore batch to write new/updated slides and delete removed slides
+      const batch = writeBatch(db);
+      const newSlideIds = new Set(updatedImages.map(img => img.id));
+
+      // Add set operations for all current slides with their order
+      updatedImages.forEach((slide, idx) => {
+        const slideDocRef = doc(db, 'settings', 'carousel_config', 'slides', slide.id);
+        batch.set(slideDocRef, {
+          image: slide.image,
+          title: slide.title,
+          description: slide.description,
+          tag: slide.tag,
+          order: idx,
+          objectPosition: slide.objectPosition || ''
+        });
+      });
+
+      // Add delete operations for any slide that was removed
+      existingSlideIds.forEach(existingId => {
+        if (!newSlideIds.has(existingId)) {
+          const slideDocRef = doc(db, 'settings', 'carousel_config', 'slides', existingId);
+          batch.delete(slideDocRef);
+        }
+      });
+
+      // 3. Commit the batch
+      await batch.commit();
+
+      // 4. Also keep the legacy single document in sync (without the heavy base64 images to prevent 1MB errors)
+      try {
+        const docRef = doc(db, 'settings', 'carousel_config');
+        const lightImages = updatedImages.map(img => ({
+          id: img.id,
+          title: img.title,
+          description: img.description,
+          tag: img.tag,
+          objectPosition: img.objectPosition || '',
+          image: img.image.startsWith('data:') && img.image.length > 50000 ? '[stored_in_subcollection]' : img.image
+        }));
+        await setDoc(docRef, { images: lightImages });
+      } catch (legacyErr) {
+        console.error('Failed to update legacy carousel config document (safely ignored):', legacyErr);
+      }
+
+      setAdminFeedback({ 
+        type: 'success', 
+        message: 'Galeria salva com sucesso na nuvem (Firestore)!' 
+      });
+
     } catch (e) {
       console.error('Failed to save to Firestore Cloud:', e);
       setAdminFeedback({ 

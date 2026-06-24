@@ -6,10 +6,13 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Carousel settings collection
-    match /settings/{documentId} {
-      allow read: if true;
-      allow write: if true;
+    // Explicitly allow settings documents and all subcollections under them
+    match /settings/{document} {
+      allow read, write: if true;
+    }
+
+    match /settings/{document}/{subcollection=**} {
+      allow read, write: if true;
     }
   }
 }

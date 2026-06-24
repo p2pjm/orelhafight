@@ -8,6 +8,21 @@
         "read": "true",
         "write": "true"
       }
+    },
+    "settings/carousel_config/slides": {
+      "schema": {
+        "id": "string",
+        "image": "string",
+        "title": "string",
+        "description": "string",
+        "tag": "string",
+        "order": "number",
+        "objectPosition": "string"
+      },
+      "rules": {
+        "read": "true",
+        "write": "true"
+      }
     }
   }
 }

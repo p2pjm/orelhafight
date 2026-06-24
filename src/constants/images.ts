@@ -9,6 +9,7 @@ import ctGymInterior from '../assets/images/ct_gym_interior_1780959775888-1.png'
 import kidsJiuJitsuClass from '../assets/images/kids_jiu_jitsu_class.png';
 import jiuJitsuTeamUnity from '../assets/images/foto_amizade_equipe.jpeg';
 import ctOrelhaFightLogo from '../assets/images/ct_orelha_fight_logo_real_1782256143021.jpg.39.39.png';
+import ctOrelhaFightLogoTransparent from '../assets/images/ct_orelha_fight_logo_transparent.png';
 import treinoFeminino from '../assets/images/treino_feminino.jpeg';
 
 export const IMAGES = {
@@ -18,5 +19,6 @@ export const IMAGES = {
   kidsJiuJitsuClass,
   jiuJitsuTeamUnity,
   ctOrelhaFightLogo,
+  ctOrelhaFightLogoTransparent,
   treinoFeminino,
 };

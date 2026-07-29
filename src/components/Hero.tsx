@@ -96,6 +96,17 @@ export default function Hero() {
 
               <a
                 href="#professor"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById('professor');
+                  if (element) {
+                    const navHeader = document.getElementById('navbar-root');
+                    const headerOffset = navHeader ? navHeader.offsetHeight : 80;
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({ top: Math.max(0, offsetPosition), behavior: 'smooth' });
+                  }
+                }}
                 className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-semibold rounded-xl border border-white/10 hover:bg-white/15 transition-all text-center flex items-center justify-center gap-2 cursor-pointer text-lg"
                 id="hero-cta-secondary"
               >

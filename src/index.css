@@ -18,6 +18,7 @@
 /* Base resets & scroll smooth behavior */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
   font-family: var(--font-sans);
   background-color: var(--color-bg-black);
   color: var(--color-text-offwhite);

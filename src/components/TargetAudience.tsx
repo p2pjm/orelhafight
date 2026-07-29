@@ -218,6 +218,17 @@ export default function TargetAudience() {
                   {activeTab === 'womens' && (
                     <a
                       href="#treino-feminino"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const element = document.getElementById('treino-feminino');
+                        if (element) {
+                          const navHeader = document.getElementById('navbar-root');
+                          const headerOffset = navHeader ? navHeader.offsetHeight : 80;
+                          const elementPosition = element.getBoundingClientRect().top;
+                          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                          window.scrollTo({ top: Math.max(0, offsetPosition), behavior: 'smooth' });
+                        }
+                      }}
                       className="px-6 py-3.5 bg-transparent border border-brand-primary/40 hover:border-brand-primary text-brand-primary font-semibold rounded-xl hover:bg-brand-primary/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
                       id="audience-learn-more-womens-btn"
                     >

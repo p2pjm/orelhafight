@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, MouseEvent } from 'react';
 import { Menu, X, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { IMAGES } from '../constants/images';
@@ -43,6 +43,34 @@ export default function Navbar() {
     );
   };
 
+  const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+
+    const targetId = href.replace('#', '');
+    
+    if (targetId === 'inicio') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Short timeout allows mobile drawer layout shift to settle before calculating scroll target
+    setTimeout(() => {
+      const element = document.getElementById(targetId);
+      if (element) {
+        const navHeader = document.getElementById('navbar-root');
+        const headerOffset = navHeader ? navHeader.offsetHeight : 80;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: 'smooth',
+        });
+      }
+    }, 30);
+  };
+
   return (
     <nav
       id="navbar-root"
@@ -55,8 +83,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Brand/Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center transition-transform hover:scale-105 duration-300">
+          <a
+            href="#inicio"
+            onClick={(e) => handleNavClick(e, '#inicio')}
+            className="flex items-center space-x-3 cursor-pointer group"
+            id="navbar-brand-logo"
+          >
+            <div className="flex items-center justify-center transition-transform group-hover:scale-105 duration-300">
               <TransparentLogo
                 src={IMAGES.ctOrelhaFightLogo}
                 alt="Logo CT Orelha Fight"
@@ -71,7 +104,7 @@ export default function Navbar() {
                 Nova Iguaçu - RJ
               </span>
             </div>
-          </div>
+          </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
@@ -79,7 +112,8 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-text-gray hover:text-brand-primary px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-text-gray hover:text-brand-primary px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
                 id={`nav-${link.name.toLowerCase().replace(' ', '-')}`}
               >
                 {link.name}
@@ -103,7 +137,7 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-text-offwhite hover:text-brand-primary p-2 focus:outline-none"
+              className="text-text-offwhite hover:text-brand-primary p-2 focus:outline-none cursor-pointer"
               aria-label="Toggle menu"
               id="mobile-menu-toggle"
             >
@@ -128,8 +162,8 @@ export default function Navbar() {
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="block text-text-gray hover:text-brand-primary px-3 py-3 rounded-lg text-base font-medium transition-colors border-b border-white/5"
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className="block text-text-gray hover:text-brand-primary px-3 py-3 rounded-lg text-base font-medium transition-colors border-b border-white/5 cursor-pointer"
                   id={`mobile-nav-${link.name.toLowerCase().replace(' ', '-')}`}
                 >
                   {link.name}

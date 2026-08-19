@@ -100,7 +100,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-black bg-brand-primary hover:bg-brand-highlight hover:scale-[1.02] transition-all rounded-xl cursor-pointer"
-                  style={{ id: 'footer-google-maps-link' }}
+                  id="footer-google-maps-link"
                 >
                   <MapPin className="h-4.5 w-4.5 fill-current text-white text-black" />
                   Ver Localização no Google

@@ -24,14 +24,17 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
       }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -54,21 +57,21 @@ export default function Navbar() {
       return;
     }
 
-    // Short timeout allows mobile drawer layout shift to settle before calculating scroll target
-    setTimeout(() => {
+    const scrollToTarget = () => {
       const element = document.getElementById(targetId);
       if (element) {
-        const navHeader = document.getElementById('navbar-root');
-        const headerOffset = navHeader ? navHeader.offsetHeight : 80;
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-        window.scrollTo({
-          top: Math.max(0, offsetPosition),
-          behavior: 'smooth',
-        });
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }, 30);
+    };
+
+    // Immediate attempt for desktop
+    scrollToTarget();
+
+    // Staggered attempts to ensure scrolling is never interrupted by the mobile menu collapsing
+    requestAnimationFrame(() => {
+      setTimeout(scrollToTarget, 80);
+      setTimeout(scrollToTarget, 280);
+    });
   };
 
   return (

@@ -100,11 +100,7 @@ export default function Hero() {
                   e.preventDefault();
                   const element = document.getElementById('professor');
                   if (element) {
-                    const navHeader = document.getElementById('navbar-root');
-                    const headerOffset = navHeader ? navHeader.offsetHeight : 80;
-                    const elementPosition = element.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                    window.scrollTo({ top: Math.max(0, offsetPosition), behavior: 'smooth' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
                 }}
                 className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white font-semibold rounded-xl border border-white/10 hover:bg-white/15 transition-all text-center flex items-center justify-center gap-2 cursor-pointer text-lg"
@@ -173,7 +169,14 @@ export default function Hero() {
               
               <img
                 src={IMAGES.profOrelhaGi}
+                srcSet={`${IMAGES.profOrelhaGiSm} 450w, ${IMAGES.profOrelhaGi} 840w`}
+                sizes="(max-width: 640px) 340px, (max-width: 1024px) 400px, 420px"
                 alt="Professor Leonardo Orelha em Kumite Gi"
+                width={420}
+                height={560}
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover relative z-10 hover:scale-105 transition-transform duration-700"
                 id="hero-photo-img"

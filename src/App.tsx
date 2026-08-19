@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ProfessorHighlight from './components/ProfessorHighlight';
@@ -15,19 +15,21 @@ import Methodology from './components/Methodology';
 import FirstClassTutorial from './components/FirstClassTutorial';
 import WomensTraining from './components/WomensTraining';
 import HorizontalGallery from './components/HorizontalGallery';
-import AdminCarousel from './components/AdminCarousel';
 import SocialProof from './components/SocialProof';
 import FAQ from './components/FAQ';
 import CTASection from './components/CTASection';
 import Footer from './components/Footer';
-import WhatsAppModal from './components/WhatsAppModal';
+
+// Code-split below-the-fold dynamic features to minimize main bundle JS and optimize LCP
+const AdminCarousel = lazy(() => import('./components/AdminCarousel'));
+const WhatsAppModal = lazy(() => import('./components/WhatsAppModal'));
 
 export default function App() {
-  const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
-  const [clickState, setClickState] = useState(false);
-  const [hoverState, setHoverState] = useState(false);
   const [isWhatsappOpen, setIsWhatsappOpen] = useState(false);
   const [whatsappText, setWhatsappText] = useState<string | undefined>(undefined);
+  
+  const cursorOuterRef = useRef<HTMLDivElement>(null);
+  const cursorInnerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleOpenWhatsAppEvent = (e: Event) => {
@@ -46,14 +48,44 @@ export default function App() {
     };
   }, []);
 
-  // Custom premium cursor trail tracking
+  // Zero-Reflow GPU-composited cursor tracking using transform and rAF
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+    // Only activate on non-touch devices
+    if (window.matchMedia('(hover: none)').matches) return;
+
+    let rafId: number | null = null;
+    let targetX = -100;
+    let targetY = -100;
+
+    const updateCursorPosition = () => {
+      if (cursorOuterRef.current) {
+        cursorOuterRef.current.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
+      }
+      if (cursorInnerRef.current) {
+        cursorInnerRef.current.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
+      }
+      rafId = null;
     };
 
-    const handleMouseDown = () => setClickState(true);
-    const handleMouseUp = () => setClickState(false);
+    const handleMouseMove = (e: MouseEvent) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateCursorPosition);
+      }
+    };
+
+    const handleMouseDown = () => {
+      if (cursorOuterRef.current) {
+        cursorOuterRef.current.classList.add('scale-90', 'bg-brand-primary/20');
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (cursorOuterRef.current) {
+        cursorOuterRef.current.classList.remove('scale-90', 'bg-brand-primary/20');
+      }
+    };
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -65,18 +97,25 @@ export default function App() {
           target.closest('a') ||
           target.getAttribute('role') === 'button')
       ) {
-        setHoverState(true);
+        if (cursorOuterRef.current) {
+          cursorOuterRef.current.classList.add('w-12', 'h-12', 'bg-brand-primary/10', 'scale-110');
+          cursorOuterRef.current.classList.remove('w-6', 'h-6');
+        }
       } else {
-        setHoverState(false);
+        if (cursorOuterRef.current) {
+          cursorOuterRef.current.classList.remove('w-12', 'h-12', 'bg-brand-primary/10', 'scale-110');
+          cursorOuterRef.current.classList.add('w-6', 'h-6');
+        }
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-    window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mousedown', handleMouseDown, { passive: true });
+    window.addEventListener('mouseup', handleMouseUp, { passive: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
@@ -87,25 +126,14 @@ export default function App() {
   return (
     <div className="relative bg-black min-h-screen text-text-offwhite overflow-x-hidden selection:bg-brand-primary selection:text-black">
       
-      {/* 
-        Sutil e Opcional Cursor Fluido Premium 
-        Translates smoothly relative to client pointer position, hides on mobile touch targets.
-      */}
+      {/* Sutil e Fluido Cursor Premium via GPU Compositing (Zero Forced Reflow) */}
       <div
-        className={`hidden lg:block fixed pointer-events-none z-50 rounded-full border border-brand-primary/40 -translate-x-1/2 -translate-y-1/2 transition-transform duration-100 ease-out ${
-          hoverState ? 'w-12 h-12 bg-brand-primary/10 scale-110' : 'w-6 h-6 bg-transparent'
-        } ${clickState ? 'scale-90 bg-brand-primary/20' : ''}`}
-        style={{
-          left: `${mousePos.x}px`,
-          top: `${mousePos.y}px`,
-        }}
+        ref={cursorOuterRef}
+        className="hidden lg:block fixed top-0 left-0 pointer-events-none z-50 rounded-full border border-brand-primary/40 w-6 h-6 bg-transparent transition-all duration-100 ease-out will-change-transform"
       />
       <div
-        className="hidden lg:block fixed pointer-events-none z-50 rounded-full w-1.5 h-1.5 bg-brand-primary -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-transform duration-75"
-        style={{
-          left: `${mousePos.x}px`,
-          top: `${mousePos.y}px`,
-        }}
+        ref={cursorInnerRef}
+        className="hidden lg:block fixed top-0 left-0 pointer-events-none z-50 rounded-full w-1.5 h-1.5 bg-brand-primary will-change-transform"
       />
 
       {/* Primary Header Glass Navbar */}
@@ -144,8 +172,10 @@ export default function App() {
         {/* 9. Galeria Editorial Horizontal Scroll */}
         <HorizontalGallery />
 
-        {/* 9b. Carrossel de Fotos do Administrador */}
-        <AdminCarousel />
+        {/* 9b. Carrossel de Fotos do Administrador (Carregamento Otimizado Sob Demanda) */}
+        <Suspense fallback={null}>
+          <AdminCarousel />
+        </Suspense>
 
         {/* 10. Prova Social e Resultados */}
         <SocialProof />
@@ -162,11 +192,15 @@ export default function App() {
       <Footer />
 
       {/* WhatsApp contact channel selector modal */}
-      <WhatsAppModal
-        isOpen={isWhatsappOpen}
-        onClose={() => setIsWhatsappOpen(false)}
-        defaultText={whatsappText}
-      />
+      {isWhatsappOpen && (
+        <Suspense fallback={null}>
+          <WhatsAppModal
+            isOpen={isWhatsappOpen}
+            onClose={() => setIsWhatsappOpen(false)}
+            defaultText={whatsappText}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

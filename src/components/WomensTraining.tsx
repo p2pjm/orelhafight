@@ -135,6 +135,10 @@ export default function WomensTraining() {
               <img
                 src={IMAGES.treinoFeminino}
                 alt="Treino Feminino no CT Orelha Fight"
+                width={500}
+                height={375}
+                loading="lazy"
+                decoding="async"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03]"
                 id="womens-photo"

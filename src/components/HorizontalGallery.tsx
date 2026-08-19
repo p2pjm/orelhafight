@@ -41,36 +41,56 @@ const initialSlides = [
 
 export default function HorizontalGallery() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [isDraggingState, setIsDraggingState] = useState(false);
+  const isDownRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftStartRef = useRef(0);
+  const rafIdRef = useRef<number | null>(null);
 
-  // Mouse drag-to-scroll handlers
+  // Mouse drag-to-scroll handlers with zero forced layout
   const handleMouseDown = (e: MouseEvent) => {
-    setIsDragging(true);
-    if (!scrollContainerRef.current) return;
-    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
-    setScrollLeft(scrollContainerRef.current.scrollLeft);
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    isDownRef.current = true;
+    setIsDraggingState(true);
+    startXRef.current = e.pageX;
+    scrollLeftStartRef.current = container.scrollLeft;
   };
 
   const handleMouseLeaveAndUp = () => {
-    setIsDragging(false);
+    isDownRef.current = false;
+    setIsDraggingState(false);
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !scrollContainerRef.current) return;
+    if (!isDownRef.current || !scrollContainerRef.current) return;
     e.preventDefault();
-    const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX) * 1.5; // Scroll speed modifier
-    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+
+    const currentX = e.pageX;
+    const walk = (currentX - startXRef.current) * 1.5;
+
+    if (rafIdRef.current === null) {
+      rafIdRef.current = requestAnimationFrame(() => {
+        if (scrollContainerRef.current && isDownRef.current) {
+          scrollContainerRef.current.scrollLeft = scrollLeftStartRef.current - walk;
+        }
+        rafIdRef.current = null;
+      });
+    }
   };
 
-  // Button desktop navigators
+  // Button desktop navigators using compositor scrollBy (zero forced reflow)
   const scroll = (direction: 'left' | 'right') => {
-    if (!scrollContainerRef.current) return;
-    const scrollAmount = 420; // single card width approximation
-    scrollContainerRef.current.scrollTo({
-      left: scrollContainerRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount),
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const scrollAmount = 420;
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
       behavior: 'smooth',
     });
   };
@@ -121,7 +141,7 @@ export default function HorizontalGallery() {
           onMouseLeave={handleMouseLeaveAndUp}
           onMouseMove={handleMouseMove}
           className={`flex gap-6 overflow-x-auto py-4 px-2 no-scrollbar scroll-smooth active:cursor-grabbing ${
-            isDragging ? 'cursor-grabbing' : 'cursor-grab'
+            isDraggingState ? 'cursor-grabbing' : 'cursor-grab'
           }`}
           id="gallery-scroller"
         >
@@ -136,6 +156,10 @@ export default function HorizontalGallery() {
                 <img
                   src={slide.image}
                   alt={slide.title}
+                  width={400}
+                  height={250}
+                  loading="lazy"
+                  decoding="async"
                   draggable="false"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 pointer-events-none"

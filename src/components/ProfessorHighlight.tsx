@@ -45,7 +45,13 @@ export default function ProfessorHighlight() {
               >
                 <img
                   src={IMAGES.profChampion}
+                  srcSet={`${IMAGES.profChampionSm} 450w, ${IMAGES.profChampion} 840w`}
+                  sizes="(max-width: 640px) 320px, 480px"
                   alt="Professor Leonardo Orelha Jiu Jitsu Champion"
+                  width={480}
+                  height={480}
+                  loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
                   className="w-full aspect-square object-cover hover:scale-105 transition-transform duration-500"
                   id="professor-avatar-img"

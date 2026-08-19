@@ -109,8 +109,23 @@ const mapImagePaths = (items: CarouselImage[]): CarouselImage[] => {
     });
 };
 
+function getInitialCarouselImages(): CarouselImage[] {
+  try {
+    const saved = localStorage.getItem('ct_orelha_dynamic_carousel_v3') || localStorage.getItem('ct_orelha_dynamic_carousel_v2');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return mapImagePaths(parsed.filter((item): item is CarouselImage => !!item && typeof item === 'object'));
+      }
+    }
+  } catch {
+    // Non-blocking fallback
+  }
+  return DEFAULT_CAROUSEL_IMAGES;
+}
+
 export default function AdminCarousel() {
-  const [images, setImages] = useState<CarouselImage[]>([]);
+  const [images, setImages] = useState<CarouselImage[]>(getInitialCarouselImages);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoplay, setIsAutoplay] = useState(true);
   
@@ -138,22 +153,23 @@ export default function AdminCarousel() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize images from Firebase Firestore, falling back to localStorage or defaults
+  // Sync images in background without blocking main-thread or initial LCP
   useEffect(() => {
+    let isCancelled = false;
+
     async function loadImages() {
-      let cloudLoaded = false;
       try {
-        // Try to load from the modern subcollection first
         const slidesColRef = collection(db, 'settings', 'carousel_config', 'slides');
         const slidesSnap = await getDocs(slidesColRef);
         
+        if (isCancelled) return;
+
         if (!slidesSnap.empty) {
           const slidesData: (CarouselImage & { order?: number })[] = [];
           slidesSnap.forEach(docSnap => {
             slidesData.push({ id: docSnap.id, ...docSnap.data() } as any);
           });
           
-          // Sort slides by the 'order' field (or custom sorting if order is missing)
           slidesData.sort((a, b) => {
             const orderA = typeof a.order === 'number' ? a.order : 0;
             const orderB = typeof b.order === 'number' ? b.order : 0;
@@ -161,111 +177,39 @@ export default function AdminCarousel() {
           });
           
           const mappedCloud = mapImagePaths(slidesData.map(({ order, ...slide }) => slide));
-          setImages(mappedCloud);
-          localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(mappedCloud));
-          cloudLoaded = true;
+          if (!isCancelled) {
+            setImages(mappedCloud);
+            localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(mappedCloud));
+          }
         } else {
-          // Fallback to the legacy single document field
           const docRef = doc(db, 'settings', 'carousel_config');
           const docSnap = await getDoc(docRef);
+          if (isCancelled) return;
+
           if (docSnap.exists()) {
             const data = docSnap.data();
             if (data && Array.isArray(data.images)) {
               const cloudImages = data.images as CarouselImage[];
               const mappedCloud = mapImagePaths(cloudImages);
-              setImages(mappedCloud);
-              
-              // Migrate these legacy images to the subcollection automatically so they are stored safely!
-              try {
-                const batch = writeBatch(db);
-                mappedCloud.forEach((slide, idx) => {
-                  const slideDocRef = doc(db, 'settings', 'carousel_config', 'slides', slide.id);
-                  batch.set(slideDocRef, {
-                    image: slide.image,
-                    title: slide.title,
-                    description: slide.description,
-                    tag: slide.tag,
-                    order: idx,
-                    objectPosition: slide.objectPosition || ''
-                  });
-                });
-                await batch.commit();
-                console.log('Successfully migrated legacy carousel document to subcollection!');
-              } catch (migrationError) {
-                console.error('Failed to run auto-migration to subcollection:', migrationError);
+              if (!isCancelled) {
+                setImages(mappedCloud);
+                localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(mappedCloud));
               }
-
-              localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(mappedCloud));
-              cloudLoaded = true;
             }
           }
         }
       } catch (error) {
-        console.error('Error loading images from Firestore Cloud:', error);
-        
-        // Load fallback FIRST so the user doesn't get a broken blank screen or lost data
-        let saved = localStorage.getItem('ct_orelha_dynamic_carousel_v3');
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed)) {
-              const migrated = mapImagePaths(parsed.filter((item): item is CarouselImage => !!item && typeof item === 'object'));
-              setImages(migrated);
-            }
-          } catch (e) {
-            console.error('Parsing fallback error:', e);
-          }
-        } else {
-          setImages(DEFAULT_CAROUSEL_IMAGES);
-        }
-
-        if (error instanceof Error && (error.message.includes('permission') || error.message.includes('Permission') || error.message.includes('insufficient'))) {
+        if (error instanceof Error && (error.message.includes('permission') || error.message.includes('insufficient'))) {
           handleFirestoreError(error, OperationType.GET, 'settings/carousel_config');
         }
       }
-
-      // If we couldn't load from cloud, fallback to localStorage migration/loads
-      if (!cloudLoaded) {
-        let saved = localStorage.getItem('ct_orelha_dynamic_carousel_v3');
-        
-        // If we only have the old v2 database, let's migrate it once to v3
-        if (!saved) {
-          const oldSaved = localStorage.getItem('ct_orelha_dynamic_carousel_v2') || localStorage.getItem('ct_orelha_dynamic_carousel');
-          if (oldSaved) {
-            try {
-              const parsed = JSON.parse(oldSaved);
-              if (Array.isArray(parsed)) {
-                const migrated = mapImagePaths(parsed.filter((item): item is CarouselImage => !!item && typeof item === 'object'));
-                
-                localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(migrated));
-                saved = JSON.stringify(migrated);
-              }
-            } catch (e) {
-              console.error('Migration error:', e);
-            }
-          }
-        }
-
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed)) {
-              const migrated = mapImagePaths(parsed.filter((item): item is CarouselImage => !!item && typeof item === 'object'));
-              setImages(migrated);
-              localStorage.setItem('ct_orelha_dynamic_carousel_v3', JSON.stringify(migrated));
-            } else {
-              setImages(DEFAULT_CAROUSEL_IMAGES);
-            }
-          } catch (e) {
-            console.error('Parsing/migration error in active load:', e);
-            setImages(DEFAULT_CAROUSEL_IMAGES);
-          }
-        } else {
-          setImages(DEFAULT_CAROUSEL_IMAGES);
-        }
-      }
     }
-    loadImages();
+
+    const timer = setTimeout(loadImages, 300);
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
   }, []);
 
   // Save changes to localStorage and Firebase Firestore

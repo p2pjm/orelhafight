@@ -17,8 +17,17 @@
       name="keywords"
       content="jiu-jitsu nova iguaçu, jiu jitsu rj, academia jiu jitsu nova iguaçu, ct orelha fight, professor leonardo orelha, aula experimental gratuita, jiu jitsu feminino, jiu jitsu kids infantil, defesa pessoal nova iguaçu, artes marciais rj"
     />
+    <meta name="author" content="Professor Leonardo Orelha" />
+    <meta name="publisher" content="CT Orelha Fight" />
+    <meta http-equiv="content-language" content="pt-br" />
     <link rel="canonical" href="https://orelhafight.vercel.app/" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <!-- Local SEO Geo Meta Tags (Google Local / Baixada Fluminense) -->
+    <meta name="geo.region" content="BR-RJ" />
+    <meta name="geo.placename" content="Nova Iguaçu" />
+    <meta name="geo.position" content="-22.7562;-43.4607" />
+    <meta name="ICBM" content="-22.7562, -43.4607" />
 
     <!-- OpenGraph / Facebook Social Share Cards -->
     <meta property="og:type" content="website" />
@@ -31,6 +40,9 @@
     <meta property="og:site_name" content="CT Orelha Fight" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:image" content="https://orelhafight.vercel.app/favicon.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Logotipo Oficial CT Orelha Fight" />
 
     <!-- Twitter / X Cards -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -66,7 +78,7 @@
     <link rel="preload" as="image" type="image/png" href="/src/assets/images/prof_orelha_gi_sm.png" media="(max-width: 640px)" fetchpriority="high" />
     <link rel="preload" as="image" type="image/png" href="/src/assets/images/prof_orelha_gi_1780959745005-1.png" media="(min-width: 641px)" fetchpriority="high" />
 
-    <!-- Schema.org JSON-LD Structured Data (LocalBusiness + FAQPage) -->
+    <!-- Schema.org JSON-LD Structured Data (LocalBusiness + FAQPage + BreadcrumbList) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -80,6 +92,12 @@
           "logo": "https://orelhafight.vercel.app/favicon.png",
           "image": "https://orelhafight.vercel.app/favicon.png",
           "description": "Centro de Treinamento de Jiu-Jitsu Brasileiro em Nova Iguaçu - RJ, com metodologia estruturada para iniciantes, turmas femininas e kids lideradas pelo Professor Leonardo Orelha.",
+          "telephone": "+55-21-9644-28614",
+          "founder": {
+            "@type": "Person",
+            "name": "Leonardo Orelha",
+            "jobTitle": "Professor e Faixa Preta de Jiu-Jitsu"
+          },
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "Rua Coronel Bernardino de Melo",
@@ -109,8 +127,62 @@
               "closes": "13:00"
             }
           ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Programas de Treinamento e Aulas",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Aula Experimental Gratuita de Jiu-Jitsu"
+                },
+                "price": "0",
+                "priceCurrency": "BRL"
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Jiu-Jitsu para Iniciantes e Adultos"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Jiu-Jitsu Infantil (Kids a partir de 4 anos)"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Treino Feminino Exclusivo e Defesa Pessoal"
+                }
+              }
+            ]
+          },
           "sameAs": [
             "https://www.instagram.com/ctorelhafight/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://orelhafight.vercel.app/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Início",
+              "item": "https://orelhafight.vercel.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Jiu-Jitsu em Nova Iguaçu",
+              "item": "https://orelhafight.vercel.app/#metodologia"
+            }
           ]
         },
         {

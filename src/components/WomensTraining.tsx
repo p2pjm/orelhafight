@@ -134,6 +134,8 @@ export default function WomensTraining() {
               {/* Image element */}
               <img
                 src={IMAGES.treinoFeminino}
+                srcSet={`${IMAGES.treinoFemininoSm} 450w, ${IMAGES.treinoFeminino} 1200w`}
+                sizes="(max-width: 640px) 360px, 500px"
                 alt="Treino Feminino no CT Orelha Fight"
                 width={500}
                 height={375}

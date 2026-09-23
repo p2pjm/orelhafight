@@ -31,11 +31,11 @@ const initialSlides = [
     description: 'Celebrações de graduações, treinos de fim de ano e união familiar. Mais do que treinar Jiu-Jitsu, nós cuidamos uns dos outros.',
   },
   {
-    id: 'atleta-competicao',
-    image: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=1000&auto=format&fit=crop',
-    tag: 'LINHAGEM',
-    title: 'Espírito Orelha Fight Team',
-    description: 'Trabalho focado, posições eficientes de passagem e pressão constante. Mantemos viva a centenária linhagem técnica do Jiu-Jitsu.',
+    id: 'treino-feminino-galeria',
+    image: IMAGES.treinoFeminino,
+    tag: 'FEMININO',
+    title: 'Treino Feminino Exclusivo',
+    description: 'Turmas estruturadas com foco em técnicas refinadas, autoconfiança, defesa pessoal e condicionamento no tatame.',
   },
 ];
 

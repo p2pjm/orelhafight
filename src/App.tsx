@@ -19,6 +19,8 @@ import SocialProof from './components/SocialProof';
 import FAQ from './components/FAQ';
 import CTASection from './components/CTASection';
 import Footer from './components/Footer';
+import BackToTop from './components/BackToTop';
+import SectionReveal from './components/SectionReveal';
 
 // Code-split below-the-fold dynamic features to minimize main bundle JS and optimize LCP
 const AdminCarousel = lazy(() => import('./components/AdminCarousel'));
@@ -124,7 +126,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="relative bg-black min-h-screen text-text-offwhite overflow-x-hidden selection:bg-brand-primary selection:text-black">
+    <div className="relative bg-black min-h-screen text-text-offwhite overflow-x-clip selection:bg-brand-primary selection:text-black">
       
       {/* Sutil e Fluido Cursor Premium via GPU Compositing (Zero Forced Reflow) */}
       <div
@@ -146,50 +148,81 @@ export default function App() {
         <Hero />
 
         {/* 2. Bloco Especial de Autoridade do Professor */}
-        <ProfessorHighlight />
+        <SectionReveal>
+          <ProfessorHighlight />
+        </SectionReveal>
 
         {/* 3. Manifesto Emocional */}
-        <Manifesto />
+        <SectionReveal>
+          <Manifesto />
+        </SectionReveal>
 
         {/* 4. Benefícios do Jiu-Jitsu */}
-        <Benefits />
+        <SectionReveal>
+          <Benefits />
+        </SectionReveal>
 
         {/* 5. Segmentação (Para quem é o CT) */}
-        <TargetAudience />
+        <SectionReveal>
+          <TargetAudience />
+        </SectionReveal>
 
         {/* 6. Diferenciais do CT */}
-        <GymDifferentiators />
+        <SectionReveal>
+          <GymDifferentiators />
+        </SectionReveal>
 
         {/* 7. O Método (3 pilares de ensino) */}
-        <Methodology />
+        <SectionReveal>
+          <Methodology />
+        </SectionReveal>
 
         {/* 8. Como Funciona a Primeira Aula (Trial) */}
-        <FirstClassTutorial />
+        <SectionReveal>
+          <FirstClassTutorial />
+        </SectionReveal>
 
         {/* 8b. Treino Feminino Especial */}
-        <WomensTraining />
+        <SectionReveal>
+          <WomensTraining />
+        </SectionReveal>
 
         {/* 9. Galeria Editorial Horizontal Scroll */}
-        <HorizontalGallery />
+        <SectionReveal>
+          <HorizontalGallery />
+        </SectionReveal>
 
         {/* 9b. Carrossel de Fotos do Administrador (Carregamento Otimizado Sob Demanda) */}
-        <Suspense fallback={null}>
-          <AdminCarousel />
-        </Suspense>
+        <SectionReveal>
+          <Suspense fallback={null}>
+            <AdminCarousel />
+          </Suspense>
+        </SectionReveal>
 
         {/* 10. Prova Social e Resultados */}
-        <SocialProof />
+        <SectionReveal>
+          <SocialProof />
+        </SectionReveal>
 
         {/* 11. Accordions FAQ */}
-        <FAQ />
+        <SectionReveal>
+          <FAQ />
+        </SectionReveal>
 
         {/* 12. CTA Final Estetizado */}
-        <CTASection />
+        <SectionReveal>
+          <CTASection />
+        </SectionReveal>
 
       </main>
 
       {/* 13. Rodapé com SEO Local */}
-      <Footer />
+      <SectionReveal>
+        <Footer />
+      </SectionReveal>
+
+      {/* Floating Back to Top Button */}
+      <BackToTop />
 
       {/* WhatsApp contact channel selector modal */}
       {isWhatsappOpen && (

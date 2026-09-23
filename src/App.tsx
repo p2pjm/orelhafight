@@ -6,24 +6,10 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import ProfessorHighlight from './components/ProfessorHighlight';
-import Manifesto from './components/Manifesto';
-import Benefits from './components/Benefits';
-import TargetAudience from './components/TargetAudience';
-import GymDifferentiators from './components/GymDifferentiators';
-import Methodology from './components/Methodology';
-import FirstClassTutorial from './components/FirstClassTutorial';
-import WomensTraining from './components/WomensTraining';
-import HorizontalGallery from './components/HorizontalGallery';
-import SocialProof from './components/SocialProof';
-import FAQ from './components/FAQ';
-import CTASection from './components/CTASection';
-import Footer from './components/Footer';
-import BackToTop from './components/BackToTop';
-import SectionReveal from './components/SectionReveal';
 
-// Code-split below-the-fold dynamic features to minimize main bundle JS and optimize LCP
-const AdminCarousel = lazy(() => import('./components/AdminCarousel'));
+// Below-the-fold content is code-split to dramatically reduce unused initial JavaScript and unblock LCP
+const DeferredSections = lazy(() => import('./components/DeferredSections'));
+const BackToTop = lazy(() => import('./components/BackToTop'));
 const WhatsAppModal = lazy(() => import('./components/WhatsAppModal'));
 
 export default function App() {
@@ -50,78 +36,54 @@ export default function App() {
     };
   }, []);
 
-  // Zero-Reflow GPU-composited cursor tracking using transform and rAF
+  // Performance-optimized custom cursor with GPU transform compositing (zero reflow)
   useEffect(() => {
-    // Only activate on non-touch devices
-    if (window.matchMedia('(hover: none)').matches) return;
+    let mouseX = -100;
+    let mouseY = -100;
+    let outerX = -100;
+    let outerY = -100;
+    let rafId: number;
 
-    let rafId: number | null = null;
-    let targetX = -100;
-    let targetY = -100;
-
-    const updateCursorPosition = () => {
-      if (cursorOuterRef.current) {
-        cursorOuterRef.current.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
-      }
+    const onMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
       if (cursorInnerRef.current) {
-        cursorInnerRef.current.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
-      }
-      rafId = null;
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      targetX = e.clientX;
-      targetY = e.clientY;
-      if (rafId === null) {
-        rafId = requestAnimationFrame(updateCursorPosition);
+        cursorInnerRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
       }
     };
 
-    const handleMouseDown = () => {
+    const loop = () => {
+      outerX += (mouseX - outerX) * 0.2;
+      outerY += (mouseY - outerY) * 0.2;
       if (cursorOuterRef.current) {
-        cursorOuterRef.current.classList.add('scale-90', 'bg-brand-primary/20');
+        cursorOuterRef.current.style.transform = `translate3d(${outerX}px, ${outerY}px, 0) translate(-50%, -50%)`;
       }
+      rafId = requestAnimationFrame(loop);
     };
 
-    const handleMouseUp = () => {
-      if (cursorOuterRef.current) {
-        cursorOuterRef.current.classList.remove('scale-90', 'bg-brand-primary/20');
-      }
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    rafId = requestAnimationFrame(loop);
+
+    const interactiveElements = document.querySelectorAll('button, a, input, [role="button"]');
+    const onEnter = () => {
+      cursorOuterRef.current?.classList.add('scale-150', 'border-brand-primary', 'bg-brand-primary/10');
+    };
+    const onLeave = () => {
+      cursorOuterRef.current?.classList.remove('scale-150', 'border-brand-primary', 'bg-brand-primary/10');
     };
 
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (
-        target &&
-        (target.tagName === 'BUTTON' ||
-          target.tagName === 'A' ||
-          target.closest('button') ||
-          target.closest('a') ||
-          target.getAttribute('role') === 'button')
-      ) {
-        if (cursorOuterRef.current) {
-          cursorOuterRef.current.classList.add('w-12', 'h-12', 'bg-brand-primary/10', 'scale-110');
-          cursorOuterRef.current.classList.remove('w-6', 'h-6');
-        }
-      } else {
-        if (cursorOuterRef.current) {
-          cursorOuterRef.current.classList.remove('w-12', 'h-12', 'bg-brand-primary/10', 'scale-110');
-          cursorOuterRef.current.classList.add('w-6', 'h-6');
-        }
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('mousedown', handleMouseDown, { passive: true });
-    window.addEventListener('mouseup', handleMouseUp, { passive: true });
-    window.addEventListener('mouseover', handleMouseOver, { passive: true });
+    interactiveElements.forEach((el) => {
+      el.addEventListener('mouseenter', onEnter);
+      el.addEventListener('mouseleave', onLeave);
+    });
 
     return () => {
-      if (rafId !== null) cancelAnimationFrame(rafId);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      window.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('mousemove', onMouseMove);
+      cancelAnimationFrame(rafId);
+      interactiveElements.forEach((el) => {
+        el.removeEventListener('mouseenter', onEnter);
+        el.removeEventListener('mouseleave', onLeave);
+      });
     };
   }, []);
 
@@ -135,94 +97,27 @@ export default function App() {
       />
       <div
         ref={cursorInnerRef}
-        className="hidden lg:block fixed top-0 left-0 pointer-events-none z-50 rounded-full w-1.5 h-1.5 bg-brand-primary will-change-transform"
+        className="hidden lg:block fixed top-0 left-0 pointer-events-none z-50 rounded-full bg-brand-primary w-1.5 h-1.5 will-change-transform"
       />
 
-      {/* Primary Header Glass Navbar */}
+      {/* Primary Header Glass Navbar (Critical Above-the-Fold) */}
       <Navbar />
 
       {/* Landing Page Content Stack */}
       <main id="main-content">
-        
-        {/* 1. Hero Principal */}
+        {/* 1. Critical LCP Hero Principal */}
         <Hero />
 
-        {/* 2. Bloco Especial de Autoridade do Professor */}
-        <SectionReveal>
-          <ProfessorHighlight />
-        </SectionReveal>
-
-        {/* 3. Manifesto Emocional */}
-        <SectionReveal>
-          <Manifesto />
-        </SectionReveal>
-
-        {/* 4. Benefícios do Jiu-Jitsu */}
-        <SectionReveal>
-          <Benefits />
-        </SectionReveal>
-
-        {/* 5. Segmentação (Para quem é o CT) */}
-        <SectionReveal>
-          <TargetAudience />
-        </SectionReveal>
-
-        {/* 6. Diferenciais do CT */}
-        <SectionReveal>
-          <GymDifferentiators />
-        </SectionReveal>
-
-        {/* 7. O Método (3 pilares de ensino) */}
-        <SectionReveal>
-          <Methodology />
-        </SectionReveal>
-
-        {/* 8. Como Funciona a Primeira Aula (Trial) */}
-        <SectionReveal>
-          <FirstClassTutorial />
-        </SectionReveal>
-
-        {/* 8b. Treino Feminino Especial */}
-        <SectionReveal>
-          <WomensTraining />
-        </SectionReveal>
-
-        {/* 9. Galeria Editorial Horizontal Scroll */}
-        <SectionReveal>
-          <HorizontalGallery />
-        </SectionReveal>
-
-        {/* 9b. Carrossel de Fotos do Administrador (Carregamento Otimizado Sob Demanda) */}
-        <SectionReveal>
-          <Suspense fallback={null}>
-            <AdminCarousel />
-          </Suspense>
-        </SectionReveal>
-
-        {/* 10. Prova Social e Resultados */}
-        <SectionReveal>
-          <SocialProof />
-        </SectionReveal>
-
-        {/* 11. Accordions FAQ */}
-        <SectionReveal>
-          <FAQ />
-        </SectionReveal>
-
-        {/* 12. CTA Final Estetizado */}
-        <SectionReveal>
-          <CTASection />
-        </SectionReveal>
-
+        {/* Below-the-fold sections loaded non-render-blocking */}
+        <Suspense fallback={<div className="min-h-screen bg-black" />}>
+          <DeferredSections />
+        </Suspense>
       </main>
 
-      {/* 13. Rodapé com SEO Local */}
-      <SectionReveal>
-        <Footer />
-      </SectionReveal>
-
-      {/* Floating Back to Top Button */}
-      <BackToTop />
+      {/* Floating Back to Top Button (Loaded on-demand) */}
+      <Suspense fallback={null}>
+        <BackToTop />
+      </Suspense>
 
       {/* WhatsApp contact channel selector modal */}
       {isWhatsappOpen && (

@@ -41,6 +41,27 @@
     />
     <meta name="twitter:image" content="https://orelhafight.vercel.app/favicon.png" />
 
+    <!-- DNS Prefetch & Preconnect for External Web Fonts (Eliminates Render Blocking) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      />
+    </noscript>
+
     <!-- LCP Image Preload for Instant Discovery in Initial HTML Document -->
     <link rel="preload" as="image" type="image/png" href="/src/assets/images/prof_orelha_gi_sm.png" media="(max-width: 640px)" fetchpriority="high" />
     <link rel="preload" as="image" type="image/png" href="/src/assets/images/prof_orelha_gi_1780959745005-1.png" media="(min-width: 641px)" fetchpriority="high" />

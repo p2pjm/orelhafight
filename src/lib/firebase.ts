@@ -3,24 +3,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+} from 'firebase/firestore';
+import firebaseConfig from '../../firebase-applet-config.json';
 
-// Configuration from firebase-applet-config.json
-const firebaseConfig = {
-  projectId: "kingly-discovery-d6m9v",
-  appId: "1:260917518702:web:55ce48b78fb4ca846b617f",
-  apiKey: "AIzaSyCseAZxL0XaZiKUc0Kb7AljfE7vXDsVack",
-  authDomain: "kingly-discovery-d6m9v.firebaseapp.com",
-  firestoreDatabaseId: "ai-studio-7bdfe1ef-12a4-4521-941e-7f45b3ab331a",
-  storageBucket: "kingly-discovery-d6m9v.firebasestorage.app",
-  messagingSenderId: "260917518702"
-};
+// Initialize Firebase App singleton
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-const app = initializeApp(firebaseConfig);
-
-// Initialize Firestore with the specific database ID
-export const db = getFirestore(app, "ai-studio-7bdfe1ef-12a4-4521-941e-7f45b3ab331a");
+// Initialize Firestore with specific database ID, long polling auto-detect for proxy/firewall resilience,
+// and multi-tab persistent cache for instant offline access
+export const db = initializeFirestore(
+  app,
+  {
+    experimentalAutoDetectLongPolling: true,
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager(),
+    }),
+  },
+  firebaseConfig.firestoreDatabaseId
+);
 
 export enum OperationType {
   CREATE = 'create',
@@ -45,7 +50,7 @@ export interface FirestoreErrorInfo {
       providerId?: string | null;
       email?: string | null;
     }[];
-  }
+  };
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null): never {
@@ -57,12 +62,11 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
       emailVerified: null,
       isAnonymous: null,
       tenantId: null,
-      providerInfo: []
+      providerInfo: [],
     },
     operationType,
-    path
+    path,
   };
   console.error('Firestore Error: ', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }
-

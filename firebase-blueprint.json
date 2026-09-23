@@ -1,28 +1,39 @@
 {
-  "collections": {
-    "settings": {
-      "schema": {
-        "images": "array"
+  "entities": {
+    "CarouselSlide": {
+      "title": "CarouselSlide",
+      "description": "Uma imagem e descrição do carrossel do CT Orelha Fight",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "order": {
+          "type": "number"
+        },
+        "objectPosition": {
+          "type": "string"
+        }
       },
-      "rules": {
-        "read": "true",
-        "write": "true"
-      }
-    },
-    "settings/carousel_config/slides": {
-      "schema": {
-        "id": "string",
-        "image": "string",
-        "title": "string",
-        "description": "string",
-        "tag": "string",
-        "order": "number",
-        "objectPosition": "string"
-      },
-      "rules": {
-        "read": "true",
-        "write": "true"
-      }
+      "required": ["image", "title"]
+    }
+  },
+  "firestore": {
+    "/settings/carousel_config/slides/{slideId}": {
+      "schema": "CarouselSlide",
+      "description": "Coleção de slides configuráveis do carrossel"
     }
   }
 }

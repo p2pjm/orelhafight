@@ -198,9 +198,12 @@ export default function AdminCarousel() {
             }
           }
         }
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof Error && (error.message.includes('permission') || error.message.includes('insufficient'))) {
           handleFirestoreError(error, OperationType.GET, 'settings/carousel_config');
+        } else {
+          // Gracefully continue in offline mode using cached/local slides
+          console.warn('Firestore backend offline/unavailable, maintaining local carousel state:', error);
         }
       }
     }

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://agenticresourcediscovery.org/spec/1.0/ai-catalog.schema.json",
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "CT Orelha Fight",
+    "identifier": "https://orelhafight.vercel.app"
+  },
+  "entries": [
+    {
+      "identifier": "urn:ai:orelhafight:service:jiu-jitsu-trial-booking",
+      "displayName": "Agendamento de Aula Experimental de Jiu-Jitsu",
+      "description": "Serviço de descoberta e agendamento para aula experimental gratuita de Jiu-Jitsu Brasileiro no Centro de Treinamento Leonardo Orelha em Nova Iguaçu - RJ.",
+      "type": "application/json",
+      "url": "https://orelhafight.vercel.app/#primeira-aula",
+      "tags": [
+        "jiu-jitsu",
+        "artes marciais",
+        "nova iguaçu",
+        "aula experimental",
+        "defesa pessoal",
+        "kids",
+        "feminino"
+      ],
+      "representativeQueries": [
+        "como agendar aula experimental de jiu jitsu no ct orelha fight",
+        "aulas de jiu jitsu para iniciantes em nova iguaçu",
+        "onde treinar jiu jitsu feminino e infantil em nova iguaçu"
+      ]
+    },
+    {
+      "identifier": "urn:ai:orelhafight:faq:academy-knowledge-base",
+      "displayName": "Base de Conhecimento e FAQ do CT Orelha Fight",
+      "description": "Respostas a dúvidas frequentes sobre equipamentos necessários, idade mínima para turmas kids, metodologia de ensino e horários de treino disponíveis.",
+      "type": "application/json",
+      "url": "https://orelhafight.vercel.app/#faq",
+      "tags": [
+        "faq",
+        "horarios",
+        "kimono",
+        "duvidas frequentes",
+        "tatame"
+      ],
+      "representativeQueries": [
+        "qual a idade minima para crianca treinar no ct orelha fight",
+        "preciso ter kimono proprio para a primeira aula experimental",
+        "iniciante sem experiencia pode treinar no ct orelha fight"
+      ]
+    }
+  ]
+}

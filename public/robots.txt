@@ -1,4 +1,22 @@
 User-agent: *
 Allow: /
 
+# Canonical Sitemaps and LLM Discovery
 Sitemap: https://orelhafight.vercel.app/sitemap.xml
+LLMs-Txt: https://orelhafight.vercel.app/llms.txt
+
+# AI Crawler and Agent Permissions
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /

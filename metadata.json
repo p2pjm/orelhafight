@@ -1,6 +1,6 @@
 {
   "name": "CT Orelha Fight",
-  "description": "Landing Page para a Escola de Luta Orelha Fight - Jiu-Jitsu em Nova Iguaçu - RJ",
+  "description": "Centro de Treinamento Leonardo Orelha em Nova Iguaçu - RJ. Aulas de Jiu-Jitsu para adultos, mulheres e crianças. Agende sua aula experimental gratuita!",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

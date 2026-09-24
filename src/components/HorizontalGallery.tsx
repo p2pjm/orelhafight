@@ -12,6 +12,7 @@ const initialSlides = [
   {
     id: 'ct-interior',
     image: IMAGES.ctGymInterior,
+    imageSm: IMAGES.ctGymInteriorSm,
     tag: 'FOTO DO NOSSO CT',
     title: 'Estrutura Moderna de Treino',
     description: 'Amplo espaço de tatame de alta densidade em Nova Iguaçu, a 10 minutos da Av. Brasil, higienizado diariamente para sua máxima segurança e conforto operacional.',
@@ -19,6 +20,7 @@ const initialSlides = [
   {
     id: 'infantil-aula',
     image: IMAGES.kidsJiuJitsuClass,
+    imageSm: IMAGES.kidsJiuJitsuClassSm,
     tag: 'FUTURO',
     title: 'Treinos Infantis Dedicados',
     description: 'Didática adaptada com brincadeiras construtivas e reforços cognitivos de disciplina, obediência e anti-bullying para os pequenos.',
@@ -26,6 +28,7 @@ const initialSlides = [
   {
     id: 'momentos-equipe',
     image: IMAGES.jiuJitsuTeamUnity,
+    imageSm: IMAGES.jiuJitsuTeamUnitySm,
     tag: 'INTEGRAÇÃO',
     title: 'Amizade e Respeito',
     description: 'Celebrações de graduações, treinos de fim de ano e união familiar. Mais do que treinar Jiu-Jitsu, nós cuidamos uns dos outros.',
@@ -33,6 +36,7 @@ const initialSlides = [
   {
     id: 'treino-feminino-galeria',
     image: IMAGES.treinoFeminino,
+    imageSm: IMAGES.treinoFemininoSm,
     tag: 'FEMININO',
     title: 'Treino Feminino Exclusivo',
     description: 'Turmas estruturadas com foco em técnicas refinadas, autoconfiança, defesa pessoal e condicionamento no tatame.',
@@ -155,6 +159,8 @@ export default function HorizontalGallery() {
               <div className="w-full aspect-[16/10] overflow-hidden relative">
                 <img
                   src={slide.image}
+                  srcSet={slide.imageSm ? `${slide.imageSm} 400w, ${slide.image} 800w` : undefined}
+                  sizes="(max-width: 640px) 300px, 400px"
                   alt={slide.title}
                   width={400}
                   height={250}

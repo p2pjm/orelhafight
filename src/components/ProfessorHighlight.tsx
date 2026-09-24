@@ -45,7 +45,7 @@ export default function ProfessorHighlight() {
               >
                 <img
                   src={IMAGES.profChampion}
-                  srcSet={`${IMAGES.profChampionSm} 450w, ${IMAGES.profChampion} 840w`}
+                  srcSet={`${IMAGES.profChampionSm} 450w, ${IMAGES.profChampion} 800w`}
                   sizes="(max-width: 640px) 320px, 480px"
                   alt="Professor Leonardo Orelha Jiu Jitsu Champion"
                   width={480}

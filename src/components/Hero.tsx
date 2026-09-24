@@ -168,8 +168,8 @@ export default function Hero() {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-brand-primary/20 rounded-full blur-[80px] pointer-events-none z-0" />
               
               <img
-                src={IMAGES.profOrelhaGi}
-                srcSet={`${IMAGES.profOrelhaGiSm} 450w, ${IMAGES.profOrelhaGi} 840w`}
+                src={IMAGES.profOrelhaGiWebp}
+                srcSet={`${IMAGES.profOrelhaGiSmWebp} 450w, ${IMAGES.profOrelhaGiWebp} 840w`}
                 sizes="(max-width: 640px) 340px, (max-width: 1024px) 400px, 420px"
                 alt="Professor Leonardo Orelha em Kumite Gi"
                 width={420}
@@ -178,7 +178,7 @@ export default function Hero() {
                 decoding="async"
                 fetchPriority="high"
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover relative z-10 hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-cover object-top relative z-10 hover:scale-105 transition-transform duration-700 will-change-transform"
                 id="hero-photo-img"
               />
 

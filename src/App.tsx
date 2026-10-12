@@ -6,6 +6,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import Preloader from './components/Preloader';
 
 // Below-the-fold content is code-split to dramatically reduce unused initial JavaScript and unblock LCP
 const DeferredSections = lazy(() => import('./components/DeferredSections'));
@@ -13,6 +14,7 @@ const BackToTop = lazy(() => import('./components/BackToTop'));
 const WhatsAppModal = lazy(() => import('./components/WhatsAppModal'));
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [isWhatsappOpen, setIsWhatsappOpen] = useState(false);
   const [whatsappText, setWhatsappText] = useState<string | undefined>(undefined);
   
@@ -88,7 +90,9 @@ export default function App() {
   }, []);
 
   return (
-    <div className="relative bg-black min-h-screen text-text-offwhite overflow-x-clip selection:bg-brand-primary selection:text-black">
+    <>
+      {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
+      <div className={`relative bg-black min-h-screen text-text-offwhite overflow-x-clip selection:bg-brand-primary selection:text-black ${isLoading ? 'overflow-hidden max-h-screen' : ''}`}>
       
       {/* Sutil e Fluido Cursor Premium via GPU Compositing (Zero Forced Reflow) */}
       <div
@@ -129,6 +133,7 @@ export default function App() {
           />
         </Suspense>
       )}
-    </div>
+      </div>
+    </>
   );
 }

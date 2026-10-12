@@ -6,8 +6,7 @@
 import { useState, useEffect, MouseEvent } from 'react';
 import { Menu, X, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { IMAGES } from '../constants/images';
-import TransparentLogo from './TransparentLogo';
+import AnimatedLogo from './AnimatedLogo';
 
 const navLinks = [
   { name: 'Início', href: '#inicio' },
@@ -92,10 +91,10 @@ export default function Navbar() {
             id="navbar-brand-logo"
           >
             <div className="flex items-center justify-center transition-transform group-hover:scale-105 duration-300">
-              <TransparentLogo
-                src={IMAGES.ctOrelhaFightLogo}
-                alt="Logo CT Orelha Fight"
-                className="h-14 w-14 object-contain filter drop-shadow-[0_0_8px_rgba(115,227,77,0.15)]"
+              <AnimatedLogo
+                className="h-14 w-14 object-contain filter drop-shadow-[0_0_8px_rgba(115,227,77,0.25)]"
+                width={56}
+                height={56}
               />
             </div>
             <div>

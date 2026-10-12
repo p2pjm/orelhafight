@@ -32,9 +32,9 @@ export const IMAGES = {
   kidsJiuJitsuClassSm,
   jiuJitsuTeamUnity,
   jiuJitsuTeamUnitySm,
-  ctOrelhaFightLogo,
+  ctOrelhaFightLogo: ctOrelhaFightLogoSm,
   ctOrelhaFightLogoSm,
-  ctOrelhaFightLogoTransparent,
+  ctOrelhaFightLogoTransparent: ctOrelhaFightLogoSm,
   treinoFeminino,
   treinoFemininoSm,
 };

@@ -33,7 +33,7 @@ export default function Footer() {
             <div className="flex items-center space-x-3">
               <div className="flex items-center justify-center transition-transform hover:scale-105 duration-300">
                 <TransparentLogo
-                  src={IMAGES.ctOrelhaFightLogo}
+                  src={IMAGES.ctOrelhaFightLogoSm}
                   alt="Logo CT Orelha Fight"
                   className="h-14 w-14 object-contain filter drop-shadow-[0_0_8px_rgba(115,227,77,0.15)]"
                 />

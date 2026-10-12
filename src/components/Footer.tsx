@@ -22,7 +22,7 @@ export default function Footer() {
   };
 
   return (
-    <footer id="footer-root" className="bg-black text-text-gray pt-20 pb-8 border-t border-brand-primary/10 relative">
+    <footer id="footer-root" className="bg-bg-card text-text-gray pt-20 pb-8 border-t border-brand-primary/10 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main upper grid */}
@@ -169,7 +169,7 @@ export default function Footer() {
         {/* Local SEO Footer keywords helper tag */}
         <div className="text-center text-[10px] sm:text-xs text-text-gray/50 max-w-4xl mx-auto mb-10 border-t border-white/5 pt-8" id="footer-seo-links">
           <p className="leading-relaxed">
-            CT Orelha Fight - Escola de Luta Orelha Fight. Carlson Gracie Team Jiu-Jitsu. Especialistas em: Jiu-Jitsu em Nova Iguaçu | CT de Jiu-Jitsu em Nova Iguaçu | Escola de Luta em Nova Iguaçu | Aula de Jiu-Jitsu em Nova Iguaçu | Treinamento de Jiu-Jitsu RJ. Todos os direitos reservados.
+            CT Orelha Fight - Escola de Luta Orelha Fight. Carlson Gracie Team Jiu-Jitsu. Especialistas em: Jiu-Jitsu Nova Iguaçu | Jiu Jitsu Nova Iguaçu | Jiu-Jitsu em Nova Iguaçu | CT de Jiu-Jitsu em Nova Iguaçu | Escola de Luta em Nova Iguaçu | Aula de Jiu-Jitsu em Nova Iguaçu | Treinamento de Jiu-Jitsu RJ. Todos os direitos reservados.
           </p>
         </div>
 

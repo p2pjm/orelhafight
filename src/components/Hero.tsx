@@ -4,7 +4,7 @@
  */
 
 import { IMAGES } from '../constants/images';
-import { MessageSquare, ArrowDown, Award, MapPin, Sparkles } from 'lucide-react';
+import { MessageSquare, ArrowDown, Award, MapPin, Sparkles, ExternalLink } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function Hero() {
@@ -119,25 +119,45 @@ export default function Hero() {
               className="mt-12 pt-8 border-t border-white/5 grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-lg mx-auto lg:mx-0"
               id="hero-badges"
             >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-brand-dark/20 border border-brand-primary/10">
-                  <Award className="h-5 w-5 text-brand-primary" />
+              <a
+                href="https://carlsongracieteam.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Visitar site oficial da Equipe Carlson Gracie"
+                aria-label="Visitar site oficial da Equipe Carlson Gracie"
+                className="flex items-center gap-3 p-1.5 -m-1.5 rounded-xl border border-white/5 hover:border-brand-primary/40 bg-white/[0.02] hover:bg-brand-primary/10 transition-all duration-200 cursor-pointer group"
+              >
+                <div className="p-2 rounded-lg bg-brand-dark/20 border border-brand-primary/10 group-hover:bg-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-200">
+                  <Award className="h-5 w-5 text-brand-primary group-hover:scale-110 transition-transform duration-200" />
                 </div>
                 <div>
-                  <span className="text-white font-bold block text-sm">Carlson Gracie</span>
-                  <span className="text-text-gray text-xs block font-mono">Linhagem Tradicional</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-white font-bold block text-sm group-hover:text-brand-primary transition-colors">Carlson Gracie</span>
+                    <ExternalLink className="h-3 w-3 text-text-gray group-hover:text-brand-primary transition-colors inline-block" />
+                  </div>
+                  <span className="text-text-gray text-xs block font-mono group-hover:text-white transition-colors">Linhagem Tradicional</span>
                 </div>
-              </div>
+              </a>
 
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-brand-dark/20 border border-brand-primary/10">
-                  <MapPin className="h-5 w-5 text-brand-primary" />
+              <a
+                href="https://maps.app.goo.gl/h3pimxEWBR8mdmYh7"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Abrir localização no Google Maps"
+                aria-label="Abrir localização no Google Maps (Nova Iguaçu - RJ)"
+                className="flex items-center gap-3 p-1.5 -m-1.5 rounded-xl border border-white/5 hover:border-brand-primary/40 bg-white/[0.02] hover:bg-brand-primary/10 transition-all duration-200 cursor-pointer group"
+              >
+                <div className="p-2 rounded-lg bg-brand-dark/20 border border-brand-primary/10 group-hover:bg-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-200">
+                  <MapPin className="h-5 w-5 text-brand-primary group-hover:scale-110 transition-transform duration-200" />
                 </div>
                 <div>
-                  <span className="text-white font-bold block text-sm">Nova Iguaçu - RJ</span>
-                  <span className="text-text-gray text-xs block font-mono">Fácil localizaçâo</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-white font-bold block text-sm group-hover:text-brand-primary transition-colors">Nova Iguaçu - RJ</span>
+                    <ExternalLink className="h-3 w-3 text-text-gray group-hover:text-brand-primary transition-colors inline-block" />
+                  </div>
+                  <span className="text-text-gray text-xs block font-mono group-hover:text-white transition-colors">Ver no Google Maps</span>
                 </div>
-              </div>
+              </a>
 
               <div className="flex items-center gap-3 col-span-2 sm:col-span-1 justify-center sm:justify-start">
                 <div className="p-2 rounded-lg bg-brand-dark/20 border border-brand-primary/10">

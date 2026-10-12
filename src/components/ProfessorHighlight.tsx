@@ -17,7 +17,7 @@ export default function ProfessorHighlight() {
   };
 
   return (
-    <section id="professor" className="py-24 bg-black relative overflow-hidden border-t border-brand-primary/10">
+    <section id="professor" className="py-24 bg-bg-card relative overflow-hidden border-t border-b border-brand-primary/10">
       {/* Background gradients */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[450px] h-[450px] bg-brand-primary/5 rounded-full blur-[100px] pointer-events-none" />
@@ -64,7 +64,7 @@ export default function ProfessorHighlight() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="absolute -bottom-6 -left-4 sm:-left-8 p-4 rounded-xl bg-bg-card/95 border border-brand-primary/20 backdrop-blur-md shadow-xl z-20 hidden sm:flex items-center gap-3.5 max-w-[280px]"
+                className="absolute -bottom-6 -left-4 sm:-left-8 p-4 rounded-xl bg-black/95 border border-brand-primary/20 backdrop-blur-md shadow-xl z-20 hidden sm:flex items-center gap-3.5 max-w-[280px]"
                 id="prof-achievement-card"
               >
                 <span className="p-2.5 rounded-lg bg-brand-primary/10 border border-brand-primary/20 text-brand-primary">

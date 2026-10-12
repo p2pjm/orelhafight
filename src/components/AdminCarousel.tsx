@@ -537,7 +537,7 @@ export default function AdminCarousel() {
   };
 
   return (
-    <section id="carrossel-dinamico" className="py-20 bg-black relative border-b border-brand-primary/10 overflow-hidden">
+    <section id="carrossel-dinamico" className="py-20 bg-bg-card relative border-b border-brand-primary/10 overflow-hidden">
       {/* Decorative ambient background grid lines */}
       <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#8eff5c05_1px,transparent_1px),linear-gradient(to_bottom,#8eff5c05_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
 
@@ -559,7 +559,7 @@ export default function AdminCarousel() {
 
         {/* Carousel Content Render */}
         {images.length > 0 ? (
-          <div className="relative max-w-4xl mx-auto bg-bg-card rounded-3xl border border-white/5 overflow-hidden shadow-2xl" id="carousel-view-container">
+          <div className="relative max-w-4xl mx-auto bg-black rounded-3xl border border-white/10 overflow-hidden shadow-2xl" id="carousel-view-container">
             
             {/* Carousel Active Image */}
             <div className="relative aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/10] w-full overflow-hidden bg-black flex items-center justify-center">

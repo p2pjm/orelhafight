@@ -56,7 +56,7 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="py-24 bg-black relative border-b border-brand-primary/10">
+    <section id="faq" className="py-24 bg-bg-card relative border-b border-brand-primary/10">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         
         {/* Banner with heading */}
@@ -79,7 +79,7 @@ export default function FAQ() {
             return (
               <div
                 key={faq.id}
-                className="bg-bg-card border border-white/5 rounded-2xl hover:border-brand-primary/15 transition-all overflow-hidden"
+                className="bg-black border border-white/5 rounded-2xl hover:border-brand-primary/20 transition-all overflow-hidden"
                 id={`faq-item-wrapper-${faq.id}`}
               >
                 <button

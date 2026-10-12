@@ -8,7 +8,7 @@ import { motion } from 'motion/react';
 
 export default function Manifesto() {
   return (
-    <section id="manifesto" className="py-24 bg-bg-card relative overflow-hidden border-t border-b border-brand-primary/10">
+    <section id="manifesto" className="py-24 bg-black relative overflow-hidden border-b border-brand-primary/10">
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-radial-gradient from-brand-primary to-transparent" />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">

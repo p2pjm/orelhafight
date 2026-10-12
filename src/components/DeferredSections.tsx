@@ -6,7 +6,6 @@
 import { lazy, Suspense } from 'react';
 import ProfessorHighlight from './ProfessorHighlight';
 import Manifesto from './Manifesto';
-import Benefits from './Benefits';
 import TargetAudience from './TargetAudience';
 import GymDifferentiators from './GymDifferentiators';
 import Methodology from './Methodology';
@@ -34,9 +33,9 @@ export default function DeferredSections() {
         <Manifesto />
       </SectionReveal>
 
-      {/* 4. Benefícios do Jiu-Jitsu */}
+      {/* 4. Galeria Editorial Horizontal Scroll */}
       <SectionReveal>
-        <Benefits />
+        <HorizontalGallery />
       </SectionReveal>
 
       {/* 5. Segmentação (Para quem é o CT) */}
@@ -49,9 +48,9 @@ export default function DeferredSections() {
         <GymDifferentiators />
       </SectionReveal>
 
-      {/* 7. O Método (3 pilares de ensino) */}
+      {/* 7. Treino Feminino Especial */}
       <SectionReveal>
-        <Methodology />
+        <WomensTraining />
       </SectionReveal>
 
       {/* 8. Como Funciona a Primeira Aula (Trial) */}
@@ -59,14 +58,9 @@ export default function DeferredSections() {
         <FirstClassTutorial />
       </SectionReveal>
 
-      {/* 8b. Treino Feminino Especial */}
+      {/* 8b. O Método (3 pilares de ensino) */}
       <SectionReveal>
-        <WomensTraining />
-      </SectionReveal>
-
-      {/* 9. Galeria Editorial Horizontal Scroll */}
-      <SectionReveal>
-        <HorizontalGallery />
+        <Methodology />
       </SectionReveal>
 
       {/* 9b. Carrossel de Fotos do Administrador (Carregamento Otimizado Sob Demanda) */}

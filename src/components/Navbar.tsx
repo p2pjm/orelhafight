@@ -12,7 +12,6 @@ import TransparentLogo from './TransparentLogo';
 const navLinks = [
   { name: 'Início', href: '#inicio' },
   { name: 'O Professor', href: '#professor' },
-  { name: 'Benefícios', href: '#beneficios' },
   { name: 'Para Quem', href: '#para-quem' },
   { name: 'Diferenciais', href: '#diferenciais' },
   { name: 'Primeira Aula', href: '#primeira-aula' },

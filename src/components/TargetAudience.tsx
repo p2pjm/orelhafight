@@ -130,7 +130,7 @@ export default function TargetAudience() {
   };
 
   return (
-    <section id="para-quem" className="py-24 bg-bg-card relative border-b border-brand-primary/10">
+    <section id="para-quem" className="py-24 bg-black relative border-b border-brand-primary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header styling */}
@@ -157,7 +157,7 @@ export default function TargetAudience() {
                 className={`py-3.5 px-4 rounded-xl font-medium text-xs sm:text-sm transition-all text-center border cursor-pointer hover:border-brand-primary/30 flex-shrink-0 snap-align-start min-w-[130px] md:min-w-0 ${
                   isSelected
                     ? 'bg-brand-primary text-black border-brand-primary font-bold shadow-md'
-                    : 'bg-black/40 text-text-gray border-white/5 hover:text-white'
+                    : 'bg-bg-card text-text-gray border-white/5 hover:text-white'
                 }`}
                 id={`audience-tab-trigger-${seg.id}`}
               >
@@ -168,7 +168,7 @@ export default function TargetAudience() {
         </div>
 
         {/* Active Content Block with Entry Animations */}
-        <div className="bg-black rounded-3xl p-6 sm:p-10 border border-brand-primary/10 glow-green" id="audience-content-area">
+        <div className="bg-bg-card rounded-3xl p-6 sm:p-10 border border-brand-primary/20 glow-green shadow-2xl" id="audience-content-area">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}

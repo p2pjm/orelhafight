@@ -47,7 +47,7 @@ const differentiators = [
 
 export default function GymDifferentiators() {
   return (
-    <section id="diferenciais" className="py-24 bg-black relative border-b border-brand-primary/10">
+    <section id="diferenciais" className="py-24 bg-bg-card relative border-b border-brand-primary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header content */}
@@ -78,7 +78,7 @@ export default function GymDifferentiators() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.05 }}
-                className="flex items-start gap-5 p-6 rounded-2xl bg-bg-card border border-white/5 hover:border-brand-primary/15 transition-all group"
+                className="flex items-start gap-5 p-6 rounded-2xl bg-black border border-white/5 hover:border-brand-primary/20 transition-all group"
                 id={`diff-item-${diff.id}`}
               >
                 <div className="p-3 bg-brand-dark/20 text-brand-primary rounded-xl border border-brand-primary/10 group-hover:bg-brand-primary group-hover:text-black transition-colors duration-300 flex-shrink-0">
